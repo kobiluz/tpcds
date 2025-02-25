@@ -281,46 +281,7 @@ public enum Table
             DbgenVersionRowGenerator.class,
             DbgenVersionGeneratorColumn.values(),
             DbgenVersionColumn.values(),
-            new ScalingInfo(0, STATIC, new int[] {0, 1, 1, 1, 1, 1, 1, 1, 1, 1}, 0)),
-
-    // source tables
-    S_BRAND,
-    S_CUSTOMER_ADDRESS,
-    S_CALL_CENTER,
-    S_CATALOG,
-    S_CATALOG_ORDER,
-    S_CATALOG_ORDER_LINEITEM,
-    S_CATALOG_PAGE,
-    S_CATALOG_PROMOTIONAL_ITEM,
-    S_CATALOG_RETURNS,
-    S_CATEGORY,
-    S_CLASS,
-    S_COMPANY,
-    S_CUSTOMER,
-    S_DIVISION,
-    S_INVENTORY,
-    S_ITEM,
-    S_MANAGER,
-    S_MANUFACTURER,
-    S_MARKET,
-    S_PRODUCT,
-    S_PROMOTION,
-    S_PURCHASE,
-    S_PURCHASE_LINEITEM,
-    S_REASON,
-    S_STORE,
-    S_STORE_PROMOTIONAL_ITEM,
-    S_STORE_RETURNS,
-    S_SUBCATEGORY,
-    S_SUBCLASS,
-    S_WAREHOUSE,
-    S_WEB_ORDER,
-    S_WEB_ORDER_LINEITEM,
-    S_WEB_PAGE,
-    S_WEB_PROMOTIONAL_ITEM,
-    S_WEB_RETURNS,
-    S_WEB_SITE,
-    S_ZIPG;
+            new ScalingInfo(0, STATIC, new int[] {0, 1, 1, 1, 1, 1, 1, 1, 1, 1}, 0));
 
     private final TableFlags tableFlags;
     private final int nullBasisPoints;
@@ -457,14 +418,6 @@ public enum Table
         List<Table> allTables = ImmutableList.copyOf(Table.values());
         return allTables.stream()
                 .filter(table -> !table.getName().startsWith("s_"))
-                .collect(Collectors.toList());
-    }
-
-    public static List<Table> getSourceTables()
-    {
-        List<Table> allTables = ImmutableList.copyOf(Table.values());
-        return allTables.stream()
-                .filter(table -> table.getName().startsWith("s_"))
                 .collect(Collectors.toList());
     }
 }

@@ -17,6 +17,10 @@ package io.trino.tpcds;
 import io.trino.tpcds.distribution.CalendarDistribution;
 import io.trino.tpcds.type.Date;
 
+import java.lang.foreign.FunctionDescriptor;
+import java.lang.foreign.Linker;
+import java.lang.foreign.SymbolLookup;
+import java.lang.invoke.MethodHandle;
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -38,9 +42,12 @@ import static io.trino.tpcds.type.Date.JULIAN_DATE_MAXIMUM;
 import static io.trino.tpcds.type.Date.JULIAN_DATE_MINIMUM;
 import static io.trino.tpcds.type.Date.fromJulianDays;
 import static io.trino.tpcds.type.Date.isLeapYear;
+import static java.lang.foreign.ValueLayout.JAVA_INT;
+import static java.lang.foreign.ValueLayout.JAVA_LONG;
 
 public class Scaling
 {
+    private static final boolean USE_NATIVE = true;
     private final double scale;
     private final Map<Table, Long> tableToRowCountMap = new EnumMap<>(Table.class);
 
@@ -48,16 +55,34 @@ public class Scaling
     {
         this.scale = scale;
 
-        for (Table table : Table.values()) {
-            ScalingInfo scalingInfo = table.getScalingInfo();
-            long baseRowCount = scalingInfo.getRowCountForScale(scale);
-
-            // now adjust for the multiplier
-            int multiplier = table.keepsHistory() ? 2 : 1;
-            for (int i = 1; i <= scalingInfo.getMultiplier(); i++) {
-                multiplier *= 10;
+        if (USE_NATIVE) {
+            try {
+                SymbolLookup libraryHandle = SymbolLookup.loaderLookup();
+                Linker linker = Linker.nativeLinker();
+                MethodHandle getRowCountMethod = linker.downcallHandle(libraryHandle.find("get_rowcount").orElseThrow(), FunctionDescriptor.of(JAVA_LONG, JAVA_INT));
+                for (Table table : Table.values()) {
+                    long rowCount = (long) getRowCountMethod.invokeExact(table.ordinal());
+                    tableToRowCountMap.put(table, rowCount);
+                    System.out.println("table " + table + " rowCount " + rowCount);
+                }
             }
-            tableToRowCountMap.put(table, baseRowCount * multiplier);
+            catch (Throwable t) {
+                System.err.println("get row count failed");
+                throw new RuntimeException("failed to find get row count method", t);
+            }
+        }
+        else {
+            for (Table table : Table.values()) {
+                ScalingInfo scalingInfo = table.getScalingInfo();
+                long baseRowCount = scalingInfo.getRowCountForScale(scale);
+
+                // now adjust for the multiplier
+                int multiplier = table.keepsHistory() ? 2 : 1;
+                for (int i = 1; i <= scalingInfo.getMultiplier(); i++) {
+                    multiplier *= 10;
+                }
+                tableToRowCountMap.put(table, baseRowCount * multiplier);
+            }
         }
     }
 

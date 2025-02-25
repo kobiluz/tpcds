@@ -1,0 +1,4 @@
+#!/bin/sh 
+
+../../cork/mvnw -Dmaven.gitcommitid.skip=true -DskipTests install 
+

@@ -21,12 +21,15 @@ import io.airlift.airline.HelpOption;
 import javax.inject.Inject;
 
 import java.util.List;
+import java.util.Map;
 
 import static io.airlift.airline.SingleCommand.singleCommand;
 
 @Command(name = "dsdgen", description = "data generator for TPC-DS")
 public class Driver
 {
+    private static final String libName = "libdsdgen.so";
+
     @Inject
     public HelpOption helpOption;
 
@@ -36,7 +39,21 @@ public class Driver
     public static void main(String[] args)
     {
         Driver driver = singleCommand(Driver.class).parse(args);
+        loadLibrary();
         driver.run();
+    }
+
+    private static void loadLibrary()
+    {
+        try {
+            Map<String, String> envVars = System.getenv();
+            String libPath = envVars.get("LD_LIBRARY_PATH");
+            System.load(libPath + "/" + libName);
+            System.out.println("loaded library " + libName);
+        }
+        catch (Throwable t) {
+            throw new RuntimeException("Error loading library", t);
+        }
     }
 
     private void run()
