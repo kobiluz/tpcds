@@ -75,7 +75,7 @@ public class WebSiteRowGenerator
         long webSiteSk = rowNumber;
         String webClass = "Unknown";
 
-        SlowlyChangingDimensionKey slowlyChangingDimensionKey = computeScdKey(WEB_SITE, rowNumber);
+        SlowlyChangingDimensionKey slowlyChangingDimensionKey = computeScdKey(WEB_SITE.ordinal(), rowNumber);
         String webSiteId = slowlyChangingDimensionKey.getBusinessKey();
         long webRecStartDateId = slowlyChangingDimensionKey.getStartDate();
         long webRecEndDateId = slowlyChangingDimensionKey.getEndDate();

@@ -19,17 +19,81 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.lang.foreign.FunctionDescriptor;
+import java.lang.foreign.Linker;
+import java.lang.foreign.SymbolLookup;
+import java.lang.invoke.MethodHandle;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static io.trino.tpcds.Results.constructResults;
 import static java.lang.String.format;
+import static java.lang.foreign.ValueLayout.JAVA_INT;
+import static java.lang.foreign.ValueLayout.JAVA_LONG;
 import static java.util.Objects.requireNonNull;
 
 public class TableGenerator
 {
+    private static final String NATIVE_GENERATOR_LIBRARY = "libdsdgen.so";
+    private static SymbolLookup nativeGeneratorLookup;
+    private static boolean nativeGenerator;
+    private static boolean nativeGeneratorLoaded;
+    private static MethodHandle getRowCountMethod;
+
     private final Session session;
+
+    public static void loadNativeGenerator()
+    {
+        try {
+            Map<String, String> envVars = System.getenv();
+            String libPath = envVars.get("LD_LIBRARY_PATH");
+            System.load(libPath + "/" + NATIVE_GENERATOR_LIBRARY);
+            nativeGeneratorLookup = SymbolLookup.loaderLookup();
+            getRowCountMethod = Linker.nativeLinker().downcallHandle(nativeGeneratorLookup.find("get_rowcount").orElseThrow(), FunctionDescriptor.of(JAVA_LONG, JAVA_INT));
+        }
+        catch (Throwable t) {
+            System.out.println("failed to load native generator");
+            return;
+        }
+        finally {
+            nativeGeneratorLoaded = true;
+        }
+        System.out.println("loaded library " + NATIVE_GENERATOR_LIBRARY);
+        nativeGenerator = true;
+    }
+
+    // 0 means there is no native value
+    public static int getNativeRowCount(int tableNumber)
+    {
+        if (!isNativeGenerator()) {
+            return 0;
+        }
+
+        try {
+            long rowCount = (long) getRowCountMethod.invokeExact(tableNumber);
+            System.out.println("table " + tableNumber + " rowCount " + rowCount);
+            return (int) rowCount;
+        }
+        catch (Throwable t) {
+            System.err.println("get row count failed");
+            return 0;
+        }
+    }
+
+    public static boolean isNativeGenerator()
+    {
+        if (!nativeGeneratorLoaded) {
+            loadNativeGenerator();
+        }
+        return nativeGenerator;
+    }
+
+    public static SymbolLookup nativeGeneratorLookup()
+    {
+        return nativeGeneratorLookup;
+    }
 
     public TableGenerator(Session session)
     {

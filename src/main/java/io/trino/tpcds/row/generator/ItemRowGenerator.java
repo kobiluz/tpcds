@@ -99,7 +99,7 @@ public class ItemRowGenerator
         List<Integer> managerIdRange = ItemsDistributions.pickRandomManagerIdRange(UNIFIED, getRandomNumberStream(I_MANAGER_ID));
         long iManagerId = generateUniformRandomKey(managerIdRange.get(0), managerIdRange.get(1), getRandomNumberStream(I_MANAGER_ID));
 
-        SlowlyChangingDimensionKey slowlyChangingDimensionKey = computeScdKey(ITEM, rowNumber);
+        SlowlyChangingDimensionKey slowlyChangingDimensionKey = computeScdKey(ITEM.ordinal(), rowNumber);
         String iItemId = slowlyChangingDimensionKey.getBusinessKey();
         long iRecStartDateId = slowlyChangingDimensionKey.getStartDate();
         long iRecEndDateId = slowlyChangingDimensionKey.getEndDate();

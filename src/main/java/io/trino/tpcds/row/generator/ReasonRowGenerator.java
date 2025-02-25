@@ -17,62 +17,18 @@ package io.trino.tpcds.row.generator;
 import io.trino.tpcds.Session;
 import io.trino.tpcds.row.ReasonRow;
 
-import java.lang.foreign.Arena;
-import java.lang.foreign.FunctionDescriptor;
-import java.lang.foreign.Linker;
-import java.lang.foreign.MemoryLayout;
-import java.lang.foreign.MemoryLayout.PathElement;
-import java.lang.foreign.MemorySegment;
-import java.lang.foreign.SequenceLayout;
-import java.lang.foreign.StructLayout;
-import java.lang.foreign.SymbolLookup;
-import java.lang.invoke.MethodHandle;
-
 import static io.trino.tpcds.BusinessKeyGenerator.makeBusinessKey;
 import static io.trino.tpcds.Nulls.createNullBitMap;
 import static io.trino.tpcds.Table.REASON;
-import static io.trino.tpcds.column.ReasonColumn.R_REASON_DESC;
-import static io.trino.tpcds.column.ReasonColumn.R_REASON_ID;
-import static io.trino.tpcds.column.ReasonColumn.R_REASON_SK;
 import static io.trino.tpcds.distribution.ReturnReasonsDistribution.getReturnReasonAtIndex;
 import static io.trino.tpcds.generator.ReasonGeneratorColumn.R_NULLS;
-import static java.lang.String.format;
-import static java.lang.foreign.ValueLayout.ADDRESS;
-import static java.lang.foreign.ValueLayout.JAVA_BYTE;
-import static java.lang.foreign.ValueLayout.JAVA_INT;
-import static java.lang.foreign.ValueLayout.JAVA_LONG;
 
 public class ReasonRowGenerator
         extends AbstractRowGenerator
 {
-    private final SequenceLayout rReasonIdLayout;
-    private final StructLayout rReasonRowLayout;
-    private final long rReasonSkOffset;
-    private final long rReasonIdOffset;
-    private final long rReasonDescriptionOffset;
-    private final MethodHandle rReasonMakeRow;
-
     public ReasonRowGenerator()
     {
         super(REASON);
-
-        try {
-            SymbolLookup libraryHandle = SymbolLookup.loaderLookup();
-            Linker linker = Linker.nativeLinker();
-            rReasonMakeRow = linker.downcallHandle(libraryHandle.find("mk_w_reason").orElseThrow(), FunctionDescriptor.of(JAVA_INT, ADDRESS, JAVA_LONG));
-            rReasonIdLayout = MemoryLayout.sequenceLayout(R_REASON_ID.getType().getPrecision().get() + JAVA_LONG.byteSize(), JAVA_BYTE);
-            rReasonRowLayout = MemoryLayout.structLayout(
-                    JAVA_LONG.withName(R_REASON_SK.getName()),
-                    rReasonIdLayout.withName(R_REASON_ID.getName()),
-                    ADDRESS.withName(R_REASON_DESC.getName()));
-            rReasonSkOffset = rReasonRowLayout.byteOffset(PathElement.groupElement(R_REASON_SK.getName()));
-            rReasonIdOffset = rReasonRowLayout.byteOffset(PathElement.groupElement(R_REASON_ID.getName()));
-            rReasonDescriptionOffset = rReasonRowLayout.byteOffset(PathElement.groupElement(R_REASON_DESC.getName()));
-        }
-        catch (Throwable t) {
-            System.err.println("ReasonRowGenerator failed");
-            throw new RuntimeException("failed to find reason row generator method", t);
-        }
     }
 
     @Override
@@ -82,35 +38,6 @@ public class ReasonRowGenerator
         long rReasonSk = rowNumber;
         String rReasonId = makeBusinessKey(rowNumber);
         String rReasonDescription = getReturnReasonAtIndex((int) (rowNumber - 1));
-
-        try (Arena arena = Arena.ofConfined()) {
-            long rReasonDescriptionLength = (long) R_REASON_DESC.getType().getPrecision().get();
-            MemorySegment rReasonDescriptionSegment = arena.allocate(rReasonDescriptionLength, JAVA_INT.byteSize());
-            MemorySegment rReasonRowSegment = arena.allocate(rReasonRowLayout.byteSize(), JAVA_LONG.byteSize());
-            rReasonRowSegment.set(ADDRESS, rReasonDescriptionOffset, rReasonDescriptionSegment);
-            int res = (int) rReasonMakeRow.invokeExact(rReasonRowSegment, rowNumber);
-            if (res < 0) {
-                throw new RuntimeException("make row for reason table failed no error " + res);
-            }
-
-            System.out.println("completed make row nullBitmap " + nullBitMap + " REASON number " + REASON.ordinal());
-            long rReasonSkNative = rReasonRowSegment.get(JAVA_LONG, rReasonSkOffset);
-            String rReasonIdNative = rReasonRowSegment.asSlice(rReasonIdOffset, rReasonIdLayout).getString(0);
-            String rReasonDescriptionNative = rReasonRowSegment.get(ADDRESS, rReasonDescriptionOffset).reinterpret(rReasonDescriptionLength).getString(0);
-            if (rReasonSk != rReasonSkNative) {
-                System.out.println(format("row %d different in reasonSk java %d native %d", rowNumber, rReasonSk, rReasonSkNative));
-            }
-            if (!rReasonId.equals(rReasonIdNative)) {
-                System.out.println(format("row %d different in reasonId java %s native %s", rowNumber, rReasonId, rReasonIdNative));
-            }
-            if (!rReasonDescription.equals(rReasonDescriptionNative)) {
-                System.out.println(format("row %d different in reasonDescription java %s native %s", rowNumber, rReasonDescription, rReasonDescriptionNative));
-            }
-        }
-        catch (Throwable t) {
-            throw new RuntimeException("failed to invoke reason row generator method", t);
-        }
-
         return new RowGeneratorResult(new ReasonRow(nullBitMap, rReasonSk, rReasonId, rReasonDescription));
     }
 }

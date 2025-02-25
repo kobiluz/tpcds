@@ -26,7 +26,6 @@ import static io.trino.tpcds.Nulls.createNullBitMap;
 import static io.trino.tpcds.SlowlyChangingDimensionUtils.computeScdKey;
 import static io.trino.tpcds.SlowlyChangingDimensionUtils.getValueForSlowlyChangingDimension;
 import static io.trino.tpcds.Table.STORE;
-import static io.trino.tpcds.Table.S_STORE;
 import static io.trino.tpcds.distribution.CallCenterDistributions.pickRandomCallCenterHours;
 import static io.trino.tpcds.distribution.EnglishDistributions.SYLLABLES_DISTRIBUTION;
 import static io.trino.tpcds.distribution.NamesDistributions.FirstNamesWeights.GENERAL_FREQUENCY;
@@ -80,7 +79,7 @@ public class StoreRowGenerator
         // The id combined with start and end dates represent the unique key for this row.
         // The id is what would be a primary key if there were only one version of each row
         // the start and end dates are the version information for the row.
-        SlowlyChangingDimensionKey slowlyChangingDimensionKey = computeScdKey(S_STORE, rowNumber);
+        SlowlyChangingDimensionKey slowlyChangingDimensionKey = computeScdKey(49, rowNumber);
         String storeId = slowlyChangingDimensionKey.getBusinessKey();
         long recStartDateId = slowlyChangingDimensionKey.getStartDate();
         long recEndDateId = slowlyChangingDimensionKey.getEndDate();
