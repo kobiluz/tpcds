@@ -48,7 +48,7 @@ public class ReasonRowNativeGenerator
     private final long rReasonSkOffset;
     private final long rReasonIdOffset;
     private final long rReasonDescriptionOffset;
-    private final MethodHandle rReasonMakeRow;
+    private final MethodHandle rMakeRow;
 
     public ReasonRowNativeGenerator()
     {
@@ -56,7 +56,7 @@ public class ReasonRowNativeGenerator
 
         try {
             SymbolLookup nativeGeneratorLookup = nativeGeneratorLookup();
-            rReasonMakeRow = Linker.nativeLinker().downcallHandle(nativeGeneratorLookup.find("mk_w_reason").orElseThrow(), FunctionDescriptor.of(JAVA_INT, ADDRESS, JAVA_LONG));
+            rMakeRow = Linker.nativeLinker().downcallHandle(nativeGeneratorLookup.find("mk_w_reason").orElseThrow(), FunctionDescriptor.of(JAVA_INT, ADDRESS, JAVA_LONG));
             rReasonIdLayout = MemoryLayout.sequenceLayout(R_REASON_ID.getType().getPrecision().get() + JAVA_LONG.byteSize(), JAVA_BYTE);
             rReasonRowLayout = MemoryLayout.structLayout(
                     JAVA_LONG.withName(R_REASON_SK.getName()),
@@ -67,7 +67,7 @@ public class ReasonRowNativeGenerator
             rReasonDescriptionOffset = rReasonRowLayout.byteOffset(PathElement.groupElement(R_REASON_DESC.getName()));
         }
         catch (Throwable t) {
-            System.err.println("ReasonRowGenerator failed");
+            System.err.println("ReasonRowNativeGenerator failed");
             throw new RuntimeException("failed to find reason row generator method", t);
         }
     }
@@ -76,19 +76,21 @@ public class ReasonRowNativeGenerator
     public RowGeneratorResult generateRowAndChildRows(long rowNumber, Session session, RowGenerator parentRowGenerator, RowGenerator childRowGenerator)
     {
         try (Arena arena = Arena.ofConfined()) {
+            MemorySegment rRowSegment = arena.allocate(rReasonRowLayout.byteSize(), JAVA_LONG.byteSize());
+
             long rReasonDescriptionLength = (long) R_REASON_DESC.getType().getPrecision().get();
             MemorySegment rReasonDescriptionSegment = arena.allocate(rReasonDescriptionLength, JAVA_INT.byteSize());
-            MemorySegment rReasonRowSegment = arena.allocate(rReasonRowLayout.byteSize(), JAVA_LONG.byteSize());
-            rReasonRowSegment.set(ADDRESS, rReasonDescriptionOffset, rReasonDescriptionSegment);
-            int res = (int) rReasonMakeRow.invokeExact(rReasonRowSegment, rowNumber);
+            rRowSegment.set(ADDRESS, rReasonDescriptionOffset, rReasonDescriptionSegment);
+
+            int res = (int) rMakeRow.invokeExact(rRowSegment, rowNumber);
             if (res < 0) {
                 throw new RuntimeException("make row for reason table failed no error " + res);
             }
 
             long nullBitMap = createNullBitMap(REASON, getRandomNumberStream(R_NULLS));
-            long rReasonSk = rReasonRowSegment.get(JAVA_LONG, rReasonSkOffset);
-            String rReasonId = rReasonRowSegment.asSlice(rReasonIdOffset, rReasonIdLayout).getString(0);
-            String rReasonDescription = rReasonRowSegment.get(ADDRESS, rReasonDescriptionOffset).reinterpret(rReasonDescriptionLength).getString(0);
+            long rReasonSk = rRowSegment.get(JAVA_LONG, rReasonSkOffset);
+            String rReasonId = rRowSegment.asSlice(rReasonIdOffset, rReasonIdLayout).getString(0);
+            String rReasonDescription = rRowSegment.get(ADDRESS, rReasonDescriptionOffset).reinterpret(rReasonDescriptionLength).getString(0);
             return new RowGeneratorResult(new ReasonRow(nullBitMap, rReasonSk, rReasonId, rReasonDescription));
         }
         catch (Throwable t) {

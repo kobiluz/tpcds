@@ -69,6 +69,7 @@ import io.trino.tpcds.generator.WebReturnsGeneratorColumn;
 import io.trino.tpcds.generator.WebSalesGeneratorColumn;
 import io.trino.tpcds.generator.WebSiteGeneratorColumn;
 import io.trino.tpcds.row.generator.CallCenterRowGenerator;
+import io.trino.tpcds.row.generator.CallCenterRowNativeGenerator;
 import io.trino.tpcds.row.generator.CatalogPageRowGenerator;
 import io.trino.tpcds.row.generator.CatalogReturnsRowGenerator;
 import io.trino.tpcds.row.generator.CatalogSalesRowGenerator;
@@ -108,10 +109,10 @@ public enum Table
     CALL_CENTER(new TableFlagsBuilder().setIsSmall().setKeepsHistory().build(),
             100,
             0xB,
-            CallCenterRowGenerator.class,
+            TableGenerator.isNativeGenerator() ? CallCenterRowNativeGenerator.class : CallCenterRowGenerator.class,
             CallCenterGeneratorColumn.values(),
             CallCenterColumn.values(),
-            new ScalingInfo(0, new int[] {0, 3, 12, 15, 18, 21, 24, 27, 30, 30}, 0)),
+            new ScalingInfo(0, new int[] {0, 3, 12, 15, 18, 21, 24, 27, 30, 30}, TableGenerator.getNativeRowCount(0))),
     CATALOG_PAGE(new TableFlagsBuilder().build(),
             200,
             0x3,
