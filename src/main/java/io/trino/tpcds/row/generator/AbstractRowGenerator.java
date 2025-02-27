@@ -16,24 +16,50 @@ package io.trino.tpcds.row.generator;
 
 import com.google.common.collect.ImmutableMap;
 import io.trino.tpcds.Table;
+import io.trino.tpcds.column.Column;
 import io.trino.tpcds.generator.GeneratorColumn;
 import io.trino.tpcds.random.RandomNumberStream;
 import io.trino.tpcds.random.RandomNumberStreamImpl;
 
+import java.lang.foreign.Arena;
+import java.lang.foreign.MemorySegment;
+import java.lang.foreign.ValueLayout;
+import java.lang.invoke.MethodHandle;
+
 import static io.trino.tpcds.random.RandomValueGenerator.generateUniformRandomInt;
+import static java.lang.foreign.ValueLayout.ADDRESS;
+import static java.lang.foreign.ValueLayout.JAVA_LONG;
 
 public abstract class AbstractRowGenerator
         implements RowGenerator
 {
     private final ImmutableMap<GeneratorColumn, RandomNumberStream> randomNumberStreamMap;
+    protected final ImmutableMap<String, Long> columnToOffsetMap;
+    protected final ImmutableMap<String, ValueLayout> columnToLayoutMap;
+    protected MemorySegment rowSegment;
+    protected MethodHandle generateRowMethod;
 
     public AbstractRowGenerator(Table table)
     {
-        ImmutableMap.Builder<GeneratorColumn, RandomNumberStream> mapBuilder = ImmutableMap.builder();
+        ImmutableMap.Builder<GeneratorColumn, RandomNumberStream> randomNumberStreamMapBuilder = ImmutableMap.builder();
         for (GeneratorColumn column : table.getGeneratorColumns()) {
-            mapBuilder.put(column, new RandomNumberStreamImpl(column.getGlobalColumnNumber(), column.getSeedsPerRow()));
+            randomNumberStreamMapBuilder.put(column, new RandomNumberStreamImpl(column.getGlobalColumnNumber(), column.getSeedsPerRow()));
         }
-        randomNumberStreamMap = mapBuilder.build();
+        randomNumberStreamMap = randomNumberStreamMapBuilder.build();
+
+        ImmutableMap.Builder<String, ValueLayout> columnToLayoutMapBuilder = ImmutableMap.builder();
+        for (Column column : table.getColumns()) {
+            columnToLayoutMapBuilder.put(column.getName(), column.getType().getLayout().withName(column.getName()));
+        }
+        columnToLayoutMap = columnToLayoutMapBuilder.build();
+
+        ImmutableMap.Builder<String, Long> columnToOffsetMapBuilder = ImmutableMap.builder();
+        long offset = 0;
+        for (Column column : table.getColumns()) {
+            columnToOffsetMapBuilder.put(column.getName(), offset);
+            offset += columnToLayoutMap.get(column.getName()).byteSize();
+        }
+        columnToOffsetMap = columnToOffsetMapBuilder.build();
     }
 
     @Override
@@ -57,5 +83,33 @@ public abstract class AbstractRowGenerator
     public RandomNumberStream getRandomNumberStream(GeneratorColumn column)
     {
         return randomNumberStreamMap.get(column);
+    }
+
+    protected void allocateRow(long rowSize)
+    {
+        rowSegment = Arena.ofConfined().allocate(rowSize, JAVA_LONG.byteSize());
+    }
+
+    protected void generateRow(long rowNumber)
+    {
+        try {
+            if ((int) generateRowMethod.invokeExact(rowSegment, rowNumber) == 0) {
+                return;
+            }
+            throw new RuntimeException("generate row failed in native");
+        }
+        catch (Throwable t) {
+            throw new RuntimeException("generate row invoke failed " + t);
+        }
+    }
+
+    protected String nativeString(Column column)
+    {
+        return rowSegment.get(ADDRESS, columnToOffsetMap.get(column.getName())).reinterpret((long) column.getType().getPrecision().get() + 1).getString(0);
+    }
+
+    protected long nativeLong(Column column)
+    {
+        return rowSegment.get(JAVA_LONG, columnToOffsetMap.get(column.getName()));
     }
 }

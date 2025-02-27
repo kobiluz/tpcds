@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
 
 import static io.trino.tpcds.Results.constructResults;
 import static java.lang.String.format;
+import static java.lang.foreign.ValueLayout.ADDRESS;
 import static java.lang.foreign.ValueLayout.JAVA_INT;
 import static java.lang.foreign.ValueLayout.JAVA_LONG;
 import static java.util.Objects.requireNonNull;
@@ -90,9 +91,9 @@ public class TableGenerator
         return nativeGenerator;
     }
 
-    public static SymbolLookup nativeGeneratorLookup()
+    public static MethodHandle nativeMakeRowMethod(String makeRowMethodName)
     {
-        return nativeGeneratorLookup;
+        return Linker.nativeLinker().downcallHandle(nativeGeneratorLookup.find(makeRowMethodName).orElseThrow(), FunctionDescriptor.of(JAVA_INT, ADDRESS, JAVA_LONG));
     }
 
     public TableGenerator(Session session)

@@ -20,19 +20,15 @@ import io.trino.tpcds.row.CallCenterRow;
 import javax.annotation.concurrent.NotThreadSafe;
 
 import java.lang.foreign.Arena;
-import java.lang.foreign.FunctionDescriptor;
-import java.lang.foreign.Linker;
 import java.lang.foreign.MemoryLayout;
 import java.lang.foreign.MemoryLayout.PathElement;
 import java.lang.foreign.MemorySegment;
 import java.lang.foreign.SequenceLayout;
 import java.lang.foreign.StructLayout;
-import java.lang.foreign.SymbolLookup;
-import java.lang.invoke.MethodHandle;
 
 import static io.trino.tpcds.Nulls.createNullBitMap;
 import static io.trino.tpcds.Table.CALL_CENTER;
-import static io.trino.tpcds.TableGenerator.nativeGeneratorLookup;
+import static io.trino.tpcds.TableGenerator.nativeMakeRowMethod;
 import static io.trino.tpcds.column.CallCenterColumn.CC_CALL_CENTER_ID;
 import static io.trino.tpcds.column.CallCenterColumn.CC_CALL_CENTER_SK;
 import static io.trino.tpcds.column.CallCenterColumn.CC_CITY;
@@ -65,8 +61,6 @@ import static io.trino.tpcds.column.CallCenterColumn.CC_SUITE_NUMBER;
 import static io.trino.tpcds.column.CallCenterColumn.CC_TAX_PERCENTAGE;
 import static io.trino.tpcds.column.CallCenterColumn.CC_ZIP;
 import static io.trino.tpcds.generator.CallCenterGeneratorColumn.CC_NULLS;
-import static io.trino.tpcds.type.Address;
-import static io.trino.tpcds.type.Address.AddressBuilder;
 import static java.lang.foreign.ValueLayout.ADDRESS;
 import static java.lang.foreign.ValueLayout.JAVA_BYTE;
 import static java.lang.foreign.ValueLayout.JAVA_INT;
@@ -76,6 +70,7 @@ import static java.lang.foreign.ValueLayout.JAVA_LONG;
 public class CallCenterRowNativeGenerator
         extends AbstractRowGenerator
 {
+    private static final String MAKE_ROW_METHOD_NAME = "mk_w_call_center";
     private final SequenceLayout aSuiteNumberLayout;
     private final SequenceLayout aCountryLayout;
     private final StructLayout aLayout;
@@ -126,15 +121,14 @@ public class CallCenterRowNativeGenerator
     private final long aGmtOffsetOffset;
     private final long dTaxPrecentageOffset;
 
-    private final MethodHandle ccMakeRow;
-
     public CallCenterRowNativeGenerator()
     {
         super(CALL_CENTER);
+        //import static io.trino.tpcds.type.Address;
+        //import static io.trino.tpcds.type.Address.AddressBuilder;
 
         try {
-            SymbolLookup nativeGeneratorLookup = nativeGeneratorLookup();
-            ccMakeRow = Linker.nativeLinker().downcallHandle(nativeGeneratorLookup.find("mk_w_call_center").orElseThrow(), FunctionDescriptor.of(JAVA_INT, ADDRESS, JAVA_LONG));
+            generateRowMethod = nativeMakeRowMethod(MAKE_ROW_METHOD_NAME);
             System.out.println("got method");
             aSuiteNumberLayout = MemoryLayout.sequenceLayout(CC_SUITE_NUMBER.getType().getPrecision().get() + 6, JAVA_BYTE);
             aCountryLayout = MemoryLayout.sequenceLayout(CC_COUNTRY.getType().getPrecision().get() + 4, JAVA_BYTE);
@@ -263,7 +257,7 @@ public class CallCenterRowNativeGenerator
             MemorySegment aStateSegment = arena.allocate(aStateLength, JAVA_INT.byteSize());
             ccRowSegment.set(ADDRESS, aStateOffset, aStateSegment);
 
-            int res = (int) ccMakeRow.invokeExact(ccRowSegment, rowNumber);
+            int res = (int) generateRowMethod.invokeExact(ccRowSegment, rowNumber);
             if (res < 0) {
                 throw new RuntimeException("make row for call center table failed no error " + res);
             }
