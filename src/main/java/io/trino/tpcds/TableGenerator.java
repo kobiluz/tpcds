@@ -96,6 +96,11 @@ public class TableGenerator
         return Linker.nativeLinker().downcallHandle(nativeGeneratorLookup.find(makeRowMethodName).orElseThrow(), FunctionDescriptor.of(JAVA_INT, ADDRESS, JAVA_LONG));
     }
 
+    public static MethodHandle nativeEndRowMethod()
+    {
+        return Linker.nativeLinker().downcallHandle(nativeGeneratorLookup.find("row_stop").orElseThrow(), FunctionDescriptor.of(JAVA_INT, JAVA_INT));
+    }
+
     public TableGenerator(Session session)
     {
         this.session = requireNonNull(session, "session is null");

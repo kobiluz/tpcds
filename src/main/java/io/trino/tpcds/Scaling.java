@@ -50,7 +50,7 @@ public class Scaling
             long baseRowCount = scalingInfo.getRowCountForScale(scale);
 
             // now adjust for the multiplier
-            int multiplier = table.keepsHistory() ? 2 : 1;
+            int multiplier = !scalingInfo.isNativeRowCount() && table.keepsHistory() ? 2 : 1;
             for (int i = 1; i <= scalingInfo.getMultiplier(); i++) {
                 multiplier *= 10;
             }

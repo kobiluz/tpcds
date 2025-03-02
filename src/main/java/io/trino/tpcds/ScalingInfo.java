@@ -24,19 +24,24 @@ public class ScalingInfo
     private static final double[] DEFINED_SCALES = {0, 1, 10, 100, 300, 1000, 3000, 10000, 30000, 100000};
     private int multiplier;
     private Map<Double, Integer> scalesToRowCountsMap;
-    private int nativeRowCount;
+    private boolean isNativeRowCount;
 
     public ScalingInfo(int multiplier, int[] rowCountsPerScale, int nativeRowCount)
     {
         checkArgument(multiplier >= 0, "multiplier is not greater than or equal to 0");
         this.multiplier = multiplier;
-
+        this.isNativeRowCount = nativeRowCount > 0;
         checkArgument(rowCountsPerScale.length == DEFINED_SCALES.length);
         scalesToRowCountsMap = new HashMap<>(DEFINED_SCALES.length);
         for (int i = 0; i < rowCountsPerScale.length; i++) {
             checkArgument(rowCountsPerScale[i] >= 0, "row counts cannot be negative");
-            scalesToRowCountsMap.put(DEFINED_SCALES[i], (nativeRowCount > 0) ? nativeRowCount : rowCountsPerScale[i]);
+            scalesToRowCountsMap.put(DEFINED_SCALES[i], isNativeRowCount ? nativeRowCount : rowCountsPerScale[i]);
         }
+    }
+
+    public boolean isNativeRowCount()
+    {
+        return isNativeRowCount;
     }
 
     public int getMultiplier()

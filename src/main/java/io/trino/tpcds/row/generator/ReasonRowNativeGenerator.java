@@ -32,7 +32,7 @@ public class ReasonRowNativeGenerator
         extends AbstractRowGenerator
 {
     private static final String MAKE_ROW_METHOD_NAME = "mk_w_reason";
-    private final StructLayout rReasonRowLayout;
+    private final StructLayout reasonRowLayout;
 
     public ReasonRowNativeGenerator()
     {
@@ -40,11 +40,11 @@ public class ReasonRowNativeGenerator
 
         try {
             generateRowMethod = nativeMakeRowMethod(MAKE_ROW_METHOD_NAME);
-            rReasonRowLayout = MemoryLayout.structLayout(
+            reasonRowLayout = MemoryLayout.structLayout(
                     columnToLayoutMap.get(R_REASON_SK.getName()),
                     columnToLayoutMap.get(R_REASON_ID.getName()),
                     columnToLayoutMap.get(R_REASON_DESC.getName()));
-            allocateRow(rReasonRowLayout.byteSize());
+            allocateRow(reasonRowLayout.byteSize());
         }
         catch (Throwable t) {
             System.err.println("ReasonRowNativeGenerator failed " + t);

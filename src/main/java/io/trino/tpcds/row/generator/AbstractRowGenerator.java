@@ -26,8 +26,10 @@ import java.lang.foreign.MemorySegment;
 import java.lang.foreign.ValueLayout;
 import java.lang.invoke.MethodHandle;
 
+import static io.trino.tpcds.TableGenerator.nativeEndRowMethod;
 import static io.trino.tpcds.random.RandomValueGenerator.generateUniformRandomInt;
 import static java.lang.foreign.ValueLayout.ADDRESS;
+import static java.lang.foreign.ValueLayout.JAVA_INT;
 import static java.lang.foreign.ValueLayout.JAVA_LONG;
 
 public abstract class AbstractRowGenerator
@@ -36,8 +38,10 @@ public abstract class AbstractRowGenerator
     private final ImmutableMap<GeneratorColumn, RandomNumberStream> randomNumberStreamMap;
     protected final ImmutableMap<String, Long> columnToOffsetMap;
     protected final ImmutableMap<String, ValueLayout> columnToLayoutMap;
+    protected final int tableNumber;
     protected MemorySegment rowSegment;
     protected MethodHandle generateRowMethod;
+    protected MethodHandle endRowMethod;
 
     public AbstractRowGenerator(Table table)
     {
@@ -60,6 +64,9 @@ public abstract class AbstractRowGenerator
             offset += columnToLayoutMap.get(column.getName()).byteSize();
         }
         columnToOffsetMap = columnToOffsetMapBuilder.build();
+
+        tableNumber = table.ordinal();
+        endRowMethod = nativeEndRowMethod();
     }
 
     @Override
@@ -87,14 +94,16 @@ public abstract class AbstractRowGenerator
 
     protected void allocateRow(long rowSize)
     {
-        rowSegment = Arena.ofConfined().allocate(rowSize, JAVA_LONG.byteSize());
+        rowSegment = Arena.ofAuto().allocate(rowSize, JAVA_LONG.byteSize());
     }
 
     protected void generateRow(long rowNumber)
     {
         try {
             if ((int) generateRowMethod.invokeExact(rowSegment, rowNumber) == 0) {
-                return;
+                if ((int) endRowMethod.invokeExact(tableNumber) == 0) {
+                    return;
+                }
             }
             throw new RuntimeException("generate row failed in native");
         }
@@ -109,6 +118,16 @@ public abstract class AbstractRowGenerator
     }
 
     protected long nativeLong(Column column)
+    {
+        return rowSegment.get(JAVA_LONG, columnToOffsetMap.get(column.getName()));
+    }
+
+    protected int nativeInt(Column column)
+    {
+        return rowSegment.get(JAVA_INT, columnToOffsetMap.get(column.getName()));
+    }
+
+    protected long nativeDecimal(Column column)
     {
         return rowSegment.get(JAVA_LONG, columnToOffsetMap.get(column.getName()));
     }

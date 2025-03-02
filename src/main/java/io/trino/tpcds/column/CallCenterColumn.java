@@ -17,10 +17,10 @@ import io.trino.tpcds.Table;
 
 import static io.trino.tpcds.Table.CALL_CENTER;
 import static io.trino.tpcds.column.ColumnTypes.DATE;
+import static io.trino.tpcds.column.ColumnTypes.DECIMAL;
 import static io.trino.tpcds.column.ColumnTypes.IDENTIFIER;
 import static io.trino.tpcds.column.ColumnTypes.INTEGER;
 import static io.trino.tpcds.column.ColumnTypes.character;
-import static io.trino.tpcds.column.ColumnTypes.decimal;
 import static io.trino.tpcds.column.ColumnTypes.varchar;
 
 public enum CallCenterColumn
@@ -30,33 +30,39 @@ public enum CallCenterColumn
     CC_CALL_CENTER_ID(character(16)),
     CC_REC_START_DATE(DATE),
     CC_REC_END_DATE(DATE),
-    CC_CLOSED_DATE_SK(INTEGER),
-    CC_OPEN_DATE_SK(INTEGER),
+    CC_CLOSED_DATE_SK(DATE),
+    CC_OPEN_DATE_SK(DATE),
     CC_NAME(varchar(50)),
     CC_CLASS(varchar(50)),
-    CC_EMPLOYEES(INTEGER),
-    CC_SQ_FT(INTEGER),
     CC_HOURS(character(20)),
     CC_MANAGER(varchar(40)),
-    CC_MKT_ID(INTEGER),
     CC_MKT_CLASS(character(50)),
     CC_MKT_DESC(varchar(100)),
     CC_MARKET_MANAGER(varchar(40)),
-    CC_DIVISION(INTEGER),
     CC_DIVISION_NAME(varchar(50)),
-    CC_COMPANY(INTEGER),
     CC_COMPANY_NAME(character(50)),
-    CC_STREET_NUMBER(character(10)),
+    CC_EMPLOYEES(INTEGER),
+    CC_SQ_FT(INTEGER),
+    CC_MKT_ID(INTEGER),
+    CC_DIVISION(INTEGER),
+    CC_COMPANY(INTEGER),
+    CC_PADDING1(INTEGER),
     CC_STREET_NAME(varchar(60)),
+    CC_STREET_NAME2(varchar(60)),
     CC_STREET_TYPE(character(15)),
     CC_SUITE_NUMBER(character(10)),
     CC_CITY(varchar(60)),
     CC_COUNTY(varchar(30)),
     CC_STATE(character(2)),
-    CC_ZIP(character(10)),
     CC_COUNTRY(varchar(20)),
-    CC_GMT_OFFSET(decimal(5, 2)),
-    CC_TAX_PERCENTAGE(decimal(5, 2));
+    CC_STREET_NUMBER(INTEGER),
+    CC_ZIP(INTEGER),
+    CC_GMT_OFFSET(INTEGER),
+    CC_PADDING2(INTEGER),
+    CC_TAX_PERCENTAGE_NUMBER(DECIMAL),
+    CC_TAX_PERCENTAGE_PRECISION(INTEGER),
+    CC_TAX_PERCENTAGE_SCALE(INTEGER),
+    CC_TAX_PERCENTAGE_FLAGS(INTEGER);
 
     private final ColumnType type;
 

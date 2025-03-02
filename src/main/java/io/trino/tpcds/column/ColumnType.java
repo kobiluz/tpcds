@@ -49,11 +49,6 @@ public class ColumnType
         if (base == VARCHAR) {
             checkState(precision.isPresent());
         }
-        if (base == DECIMAL) {
-            checkState(precision.isPresent());
-            checkState(scale.isPresent());
-        }
-
         this.base = base;
         this.precision = precision;
         this.scale = scale;
