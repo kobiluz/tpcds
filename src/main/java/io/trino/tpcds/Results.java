@@ -80,9 +80,6 @@ public class Results
             checkArgument(startingRowNumber >= 1, "starting row number is less than 1: %s", startingRowNumber);
             checkArgument(endingRowNumber <= session.getScaling().getRowCount(table), "starting row number is greater than the total rows in %s: %s", table, endingRowNumber);
 
-            if (endingRowNumber > 6) {
-                throw new RuntimeException("SHIT");
-            }
             this.table = table;
             this.rowNumber = startingRowNumber;
             this.endingRowNumber = endingRowNumber;

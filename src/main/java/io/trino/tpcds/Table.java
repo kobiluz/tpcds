@@ -71,6 +71,7 @@ import io.trino.tpcds.generator.WebSiteGeneratorColumn;
 import io.trino.tpcds.row.generator.CallCenterRowGenerator;
 import io.trino.tpcds.row.generator.CallCenterRowNativeGenerator;
 import io.trino.tpcds.row.generator.CatalogPageRowGenerator;
+import io.trino.tpcds.row.generator.CatalogPageRowNativeGenerator;
 import io.trino.tpcds.row.generator.CatalogReturnsRowGenerator;
 import io.trino.tpcds.row.generator.CatalogSalesRowGenerator;
 import io.trino.tpcds.row.generator.CustomerAddressRowGenerator;
@@ -116,10 +117,10 @@ public enum Table
     CATALOG_PAGE(new TableFlagsBuilder().build(),
             200,
             0x3,
-            CatalogPageRowGenerator.class,
+            TableGenerator.isNativeGenerator() ? CatalogPageRowNativeGenerator.class : CatalogPageRowGenerator.class,
             CatalogPageGeneratorColumn.values(),
             CatalogPageColumn.values(),
-            new ScalingInfo(0, new int[] {0, 11718, 12000, 20400, 26000, 30000, 36000, 40000, 46000, 50000}, 0)),
+            new ScalingInfo(0, new int[] {0, 11718, 12000, 20400, 26000, 30000, 36000, 40000, 46000, 50000}, TableGenerator.getNativeRowCount(1))),
     CATALOG_RETURNS(new TableFlagsBuilder().build(),
             400,
             0x10007,

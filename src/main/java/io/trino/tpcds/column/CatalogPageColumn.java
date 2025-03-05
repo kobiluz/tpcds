@@ -16,6 +16,7 @@ package io.trino.tpcds.column;
 import io.trino.tpcds.Table;
 
 import static io.trino.tpcds.Table.CATALOG_PAGE;
+import static io.trino.tpcds.column.ColumnTypes.DATE;
 import static io.trino.tpcds.column.ColumnTypes.IDENTIFIER;
 import static io.trino.tpcds.column.ColumnTypes.INTEGER;
 import static io.trino.tpcds.column.ColumnTypes.character;
@@ -26,13 +27,13 @@ public enum CatalogPageColumn
 {
     CP_CATALOG_PAGE_SK(IDENTIFIER),
     CP_CATALOG_PAGE_ID(character(16)),
-    CP_START_DATE_SK(INTEGER),
-    CP_END_DATE_SK(INTEGER),
+    CP_START_DATE_SK(DATE),
+    CP_END_DATE_SK(DATE),
     CP_DEPARTMENT(varchar(50)),
-    CP_CATALOG_NUMBER(INTEGER),
-    CP_CATALOG_PAGE_NUMBER(INTEGER),
     CP_DESCRIPTION(varchar(100)),
-    CP_TYPE(varchar(100));
+    CP_TYPE(varchar(100)),
+    CP_CATALOG_NUMBER(INTEGER),
+    CP_CATALOG_PAGE_NUMBER(INTEGER);
 
     private final ColumnType type;
 
