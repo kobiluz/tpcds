@@ -49,6 +49,7 @@ import static io.trino.tpcds.column.CallCenterColumn.CC_NAME;
 import static io.trino.tpcds.column.CallCenterColumn.CC_OPEN_DATE_SK;
 import static io.trino.tpcds.column.CallCenterColumn.CC_PADDING1;
 import static io.trino.tpcds.column.CallCenterColumn.CC_PADDING2;
+import static io.trino.tpcds.column.CallCenterColumn.CC_PADDING3;
 import static io.trino.tpcds.column.CallCenterColumn.CC_REC_END_DATE;
 import static io.trino.tpcds.column.CallCenterColumn.CC_REC_START_DATE;
 import static io.trino.tpcds.column.CallCenterColumn.CC_SQ_FT;

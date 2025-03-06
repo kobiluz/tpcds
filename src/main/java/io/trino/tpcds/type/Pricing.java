@@ -126,6 +126,86 @@ public class Pricing
         this.netLoss = netLoss;
     }
 
+    public Pricing(Decimal wholesaleCost,
+            Decimal listPrice,
+            Decimal salesPrice,
+            Decimal extDiscountAmount,
+            Decimal extSalesPrice,
+            Decimal extWholesaleCost,
+            Decimal extListPrice,
+            Decimal taxPercent,
+            Decimal couponAmount,
+            Decimal extShipCost,
+            Decimal netPaidIncludingShipping,
+            Decimal netPaidIncludingShippingAndTax,
+            Decimal netProfit,
+            Decimal netPaid,
+            Decimal netPaidIncludingTax,
+            int quantity)
+    {
+        this.wholesaleCost = wholesaleCost;
+        this.listPrice = listPrice;
+        this.salesPrice = salesPrice;
+        this.extDiscountAmount = extDiscountAmount;
+        this.extSalesPrice = extSalesPrice;
+        this.extWholesaleCost = extWholesaleCost;
+        this.extListPrice = extListPrice;
+        this.taxPercent = taxPercent;
+        this.couponAmount = couponAmount;
+        this.extShipCost = extShipCost;
+        this.netPaidIncludingShipping = netPaidIncludingShipping;
+        this.netPaidIncludingShippingAndTax = netPaidIncludingShippingAndTax;
+        this.netProfit = netProfit;
+        this.netPaid = netPaid;
+        this.netPaidIncludingTax = netPaidIncludingTax;
+        this.quantity = quantity;
+
+        this.extTax = ZERO;
+        this.shipCost = ZERO;
+        this.refundedCash = ZERO;
+        this.reversedCharge = ZERO;
+        this.storeCredit = ZERO;
+        this.fee = ZERO;
+        this.netLoss = ZERO;
+    }
+
+    public Pricing(Decimal netPaid,
+            Decimal extTax,
+            Decimal netPaidIncludingTax,
+            Decimal fee,
+            Decimal extShipCost,
+            Decimal refundedCash,
+            Decimal reversedCharge,
+            Decimal storeCredit,
+            Decimal netLoss,
+            int quantity)
+    {
+        this.netPaid = netPaid;
+        this.extTax = extTax;
+        this.netPaidIncludingTax = netPaidIncludingTax;
+        this.fee = fee;
+        this.extShipCost = extShipCost;
+        this.refundedCash = refundedCash;
+        this.reversedCharge = reversedCharge;
+        this.storeCredit = storeCredit;
+        this.netLoss = netLoss;
+        this.quantity = quantity;
+
+        this.wholesaleCost = ZERO;
+        this.listPrice = ZERO;
+        this.salesPrice = ZERO;
+        this.extDiscountAmount = ZERO;
+        this.extSalesPrice = ZERO;
+        this.extWholesaleCost = ZERO;
+        this.extListPrice = ZERO;
+        this.taxPercent = ZERO;
+        this.couponAmount = ZERO;
+        this.shipCost = ZERO;
+        this.netPaidIncludingShipping = ZERO;
+        this.netPaidIncludingShippingAndTax = ZERO;
+        this.netProfit = ZERO;
+    }
+
     public static Pricing generatePricingForSalesTable(GeneratorColumn column, RandomNumberStream randomNumberStream)
     {
         if (!LIMITS_PER_COLUMN.containsKey(column)) {

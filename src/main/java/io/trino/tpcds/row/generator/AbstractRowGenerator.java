@@ -22,8 +22,8 @@ import io.trino.tpcds.random.RandomNumberStream;
 import io.trino.tpcds.random.RandomNumberStreamImpl;
 
 import java.lang.foreign.Arena;
+import java.lang.foreign.MemoryLayout;
 import java.lang.foreign.MemorySegment;
-import java.lang.foreign.ValueLayout;
 import java.lang.invoke.MethodHandle;
 
 import static io.trino.tpcds.TableGenerator.nativeEndRowMethod;
@@ -37,7 +37,7 @@ public abstract class AbstractRowGenerator
 {
     private final ImmutableMap<GeneratorColumn, RandomNumberStream> randomNumberStreamMap;
     protected final ImmutableMap<String, Long> columnToOffsetMap;
-    protected final ImmutableMap<String, ValueLayout> columnToLayoutMap;
+    protected final ImmutableMap<String, MemoryLayout> columnToLayoutMap;
     protected final int tableNumber;
     protected MemorySegment rowSegment;
     protected MethodHandle generateRowMethod;
@@ -51,7 +51,7 @@ public abstract class AbstractRowGenerator
         }
         randomNumberStreamMap = randomNumberStreamMapBuilder.build();
 
-        ImmutableMap.Builder<String, ValueLayout> columnToLayoutMapBuilder = ImmutableMap.builder();
+        ImmutableMap.Builder<String, MemoryLayout> columnToLayoutMapBuilder = ImmutableMap.builder();
         for (Column column : table.getColumns()) {
             columnToLayoutMapBuilder.put(column.getName(), column.getType().getLayout().withName(column.getName()));
         }

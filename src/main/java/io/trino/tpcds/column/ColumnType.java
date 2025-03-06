@@ -13,7 +13,7 @@
  */
 package io.trino.tpcds.column;
 
-import java.lang.foreign.ValueLayout;
+import java.lang.foreign.MemoryLayout;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -35,6 +35,7 @@ public class ColumnType
         IDENTIFIER,
         DATE,
         DECIMAL,
+        DECIMAL_LAYOUT,
         VARCHAR,
         CHAR,
         TIME
@@ -84,7 +85,7 @@ public class ColumnType
         return scale;
     }
 
-    public ValueLayout getLayout()
+    public MemoryLayout getLayout()
     {
         switch (base) {
             case INTEGER:
@@ -92,6 +93,8 @@ public class ColumnType
             case VARCHAR:
             case CHAR:
                 return ADDRESS;
+            case DECIMAL_LAYOUT:
+                return MemoryLayout.paddingLayout(24);
             default:
                 return JAVA_LONG;
         }

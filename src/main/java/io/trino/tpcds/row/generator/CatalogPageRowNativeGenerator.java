@@ -59,8 +59,8 @@ public class CatalogPageRowNativeGenerator
             allocateRow(cpRowLayout.byteSize());
         }
         catch (Throwable t) {
-            System.err.println("CallCenterRowNativeGenerator failed " + t);
-            throw new RuntimeException("failed to find call center row generator method", t);
+            System.err.println("CatalogPageRowNativeGenerator failed " + t);
+            throw new RuntimeException("failed to find catalog page row generator method", t);
         }
     }
 
