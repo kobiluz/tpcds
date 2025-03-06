@@ -116,7 +116,8 @@ public class CallCenterRowNativeGenerator
                     columnToLayoutMap.get(CC_TAX_PERCENTAGE_NUMBER.getName()),
                     columnToLayoutMap.get(CC_TAX_PERCENTAGE_PRECISION.getName()),
                     columnToLayoutMap.get(CC_TAX_PERCENTAGE_SCALE.getName()),
-                    columnToLayoutMap.get(CC_TAX_PERCENTAGE_FLAGS.getName()));
+                    columnToLayoutMap.get(CC_TAX_PERCENTAGE_FLAGS.getName()),
+                    columnToLayoutMap.get(CC_PADDING3.getName()));
             allocateRow(ccRowLayout.byteSize());
         }
         catch (Throwable t) {
