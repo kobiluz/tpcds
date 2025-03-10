@@ -30,7 +30,7 @@ public class ScalingInfo
     {
         checkArgument(multiplier >= 0, "multiplier is not greater than or equal to 0");
         this.multiplier = multiplier;
-        this.isNativeRowCount = nativeRowCount > 0;
+        this.isNativeRowCount = nativeRowCount != 0;
         checkArgument(rowCountsPerScale.length == DEFINED_SCALES.length);
         scalesToRowCountsMap = new HashMap<>(DEFINED_SCALES.length);
         for (int i = 0; i < rowCountsPerScale.length; i++) {

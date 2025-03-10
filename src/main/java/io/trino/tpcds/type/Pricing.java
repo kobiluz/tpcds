@@ -133,14 +133,14 @@ public class Pricing
             Decimal extSalesPrice,
             Decimal extWholesaleCost,
             Decimal extListPrice,
-            Decimal taxPercent,
             Decimal couponAmount,
-            Decimal extShipCost,
             Decimal netPaidIncludingShipping,
             Decimal netPaidIncludingShippingAndTax,
             Decimal netProfit,
             Decimal netPaid,
             Decimal netPaidIncludingTax,
+            Decimal extTax,
+            Decimal extShipCost,
             int quantity)
     {
         this.wholesaleCost = wholesaleCost;
@@ -150,17 +150,17 @@ public class Pricing
         this.extSalesPrice = extSalesPrice;
         this.extWholesaleCost = extWholesaleCost;
         this.extListPrice = extListPrice;
-        this.taxPercent = taxPercent;
         this.couponAmount = couponAmount;
-        this.extShipCost = extShipCost;
         this.netPaidIncludingShipping = netPaidIncludingShipping;
         this.netPaidIncludingShippingAndTax = netPaidIncludingShippingAndTax;
         this.netProfit = netProfit;
         this.netPaid = netPaid;
         this.netPaidIncludingTax = netPaidIncludingTax;
+        this.extTax = extTax;
+        this.extShipCost = extShipCost;
         this.quantity = quantity;
 
-        this.extTax = ZERO;
+        this.taxPercent = ZERO;
         this.shipCost = ZERO;
         this.refundedCash = ZERO;
         this.reversedCharge = ZERO;

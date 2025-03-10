@@ -114,7 +114,7 @@ public class TableGenerator
         }
 
         try (OutputStreamWriter parentWriter = addFileWriterForTable(table);
-                OutputStreamWriter childWriter = table.hasChild() && !session.generateOnlyOneTable() ? addFileWriterForTable(table.getChild()) : null) {
+                OutputStreamWriter childWriter = table.hasChild() ? addFileWriterForTable(table.getChild()) : null) {
             Results results = constructResults(table, session);
             for (List<List<String>> parentAndChildRows : results) {
                 if (parentAndChildRows.size() > 0) {

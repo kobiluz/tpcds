@@ -73,7 +73,9 @@ import io.trino.tpcds.row.generator.CallCenterRowNativeGenerator;
 import io.trino.tpcds.row.generator.CatalogPageRowGenerator;
 import io.trino.tpcds.row.generator.CatalogPageRowNativeGenerator;
 import io.trino.tpcds.row.generator.CatalogReturnsRowGenerator;
+import io.trino.tpcds.row.generator.CatalogReturnsRowNativeGenerator;
 import io.trino.tpcds.row.generator.CatalogSalesRowGenerator;
+import io.trino.tpcds.row.generator.CatalogSalesRowNativeGenerator;
 import io.trino.tpcds.row.generator.CustomerAddressRowGenerator;
 import io.trino.tpcds.row.generator.CustomerDemographicsRowGenerator;
 import io.trino.tpcds.row.generator.CustomerRowGenerator;
@@ -124,17 +126,17 @@ public enum Table
     CATALOG_RETURNS(new TableFlagsBuilder().build(),
             400,
             0x10007,
-            CatalogReturnsRowGenerator.class,
+            TableGenerator.isNativeGenerator() ? CatalogReturnsRowNativeGenerator.class : CatalogReturnsRowGenerator.class,
             CatalogReturnsGeneratorColumn.values(),
             CatalogReturnsColumn.values(),
-            new ScalingInfo(4, new int[] {0, 16, 160, 1600, 4800, 16000, 48000, 160000, 480000, 1600000}, 0)),
+            new ScalingInfo(4, new int[] {0, 16, 160, 1600, 4800, 16000, 48000, 160000, 480000, 1600000}, TableGenerator.getNativeRowCount(2))),
     CATALOG_SALES(new TableFlagsBuilder().setIsDateBased().build(),
             100,
             0x28000,
-            CatalogSalesRowGenerator.class,
+            TableGenerator.isNativeGenerator() ? CatalogSalesRowNativeGenerator.class : CatalogSalesRowGenerator.class,
             CatalogSalesGeneratorColumn.values(),
             CatalogSalesColumn.values(),
-            new ScalingInfo(4, new int[] {0, 16, 160, 1600, 4800, 16000, 48000, 160000, 480000, 1600000}, 0)),
+            new ScalingInfo(4, new int[] {0, 16, 160, 1600, 4800, 16000, 48000, 160000, 480000, 1600000}, TableGenerator.getNativeRowCount(3))),
     CUSTOMER(new TableFlagsBuilder().build(),
             700,
             0x13,

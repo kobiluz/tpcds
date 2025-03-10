@@ -14,20 +14,18 @@
 
 package io.trino.tpcds.row.generator;
 
-import com.google.common.collect.ImmutableList;
 import io.trino.tpcds.Session;
 import io.trino.tpcds.row.CatalogReturnsRow;
-import io.trino.tpcds.row.CatalogSalesRow;
 import io.trino.tpcds.row.TableRow;
 import io.trino.tpcds.type.Decimal;
 import io.trino.tpcds.type.Pricing;
 
 import java.lang.foreign.MemoryLayout;
+import java.lang.foreign.MemorySegment;
 import java.lang.foreign.StructLayout;
 
 import static io.trino.tpcds.Nulls.createNullBitMap;
 import static io.trino.tpcds.Table.CATALOG_RETURNS;
-import static io.trino.tpcds.TableGenerator.nativeMakeRowMethod;
 import static io.trino.tpcds.column.CatalogReturnsColumn.CR_CALL_CENTER_SK;
 import static io.trino.tpcds.column.CatalogReturnsColumn.CR_CATALOG_PAGE_SK;
 import static io.trino.tpcds.column.CatalogReturnsColumn.CR_ITEM_SK;
@@ -106,21 +104,18 @@ import static io.trino.tpcds.column.CatalogReturnsColumn.CR_SHIP_MODE_SK;
 import static io.trino.tpcds.column.CatalogReturnsColumn.CR_VALID;
 import static io.trino.tpcds.column.CatalogReturnsColumn.CR_WAREHOUSE_SK;
 import static io.trino.tpcds.generator.CatalogReturnsGeneratorColumn.CR_NULLS;
-import static java.util.Collections.emptyList;
 
 public class CatalogReturnsRowNativeGenerator
         extends AbstractRowGenerator
 {
-    private static final String MAKE_ROW_METHOD_NAME = "mk_w_catalog_returns";
-    private final StructLayout ccRowLayout;
+    private final StructLayout crRowLayout;
 
     public CatalogReturnsRowNativeGenerator()
     {
         super(CATALOG_RETURNS);
 
         try {
-            generateRowMethod = nativeMakeRowMethod(MAKE_ROW_METHOD_NAME);
-            ccRowLayout = MemoryLayout.structLayout(
+            crRowLayout = MemoryLayout.structLayout(
                     columnToLayoutMap.get(CR_RETURNED_DATE_SK.getName()),
                     columnToLayoutMap.get(CR_RETURNED_TIME_SK.getName()),
                     columnToLayoutMap.get(CR_ITEM_SK.getName()),
@@ -161,8 +156,6 @@ public class CatalogReturnsRowNativeGenerator
                     columnToLayoutMap.get(CR_PRICING_NET_PAID_INC_TAX_SCALE.getName()),
                     columnToLayoutMap.get(CR_PRICING_NET_PAID_INC_TAX_FLAGS.getName()),
                     columnToLayoutMap.get(CR_PADDING_INT2.getName()),
-                    columnToLayoutMap.get(CR_PRICING_QUANTITY.getName()),
-                    columnToLayoutMap.get(CR_VALID.getName()),
                     columnToLayoutMap.get(CR_PRICING_EXT_TAX_NUMBER.getName()),
                     columnToLayoutMap.get(CR_PRICING_EXT_TAX_PRECISION.getName()),
                     columnToLayoutMap.get(CR_PRICING_EXT_TAX_SCALE.getName()),
@@ -173,6 +166,8 @@ public class CatalogReturnsRowNativeGenerator
                     columnToLayoutMap.get(CR_PRICING_EXT_SHIP_COST_SCALE.getName()),
                     columnToLayoutMap.get(CR_PRICING_EXT_SHIP_COST_FLAGS.getName()),
                     columnToLayoutMap.get(CR_PADDING_INT4.getName()),
+                    columnToLayoutMap.get(CR_PRICING_QUANTITY.getName()),
+                    columnToLayoutMap.get(CR_VALID.getName()),
                     columnToLayoutMap.get(CR_PRICING_REFUNDED_CASH_NUMBER.getName()),
                     columnToLayoutMap.get(CR_PRICING_REFUNDED_CASH_PRECISION.getName()),
                     columnToLayoutMap.get(CR_PRICING_REFUNDED_CASH_SCALE.getName()),
@@ -198,7 +193,6 @@ public class CatalogReturnsRowNativeGenerator
                     columnToLayoutMap.get(CR_PRICING_NET_LOSS_SCALE.getName()),
                     columnToLayoutMap.get(CR_PRICING_NET_LOSS_FLAGS.getName()),
                     columnToLayoutMap.get(CR_PADDING_INT9.getName()));
-            allocateRow(ccRowLayout.byteSize());
         }
         catch (Throwable t) {
             System.err.println("CatalogReturnsRowNativeGenerator failed " + t);
@@ -206,24 +200,26 @@ public class CatalogReturnsRowNativeGenerator
         }
     }
 
+    public StructLayout getLayout()
+    {
+        return crRowLayout;
+    }
+
     @Override
     public RowGeneratorResult generateRowAndChildRows(long rowNumber, Session session, RowGenerator parentRowGenerator, RowGenerator childRowGenerator)
     {
-        // The catalog returns table is a child of the catalog_sales table because you can only return things that have
-        // already been purchased.  This method should only get called if we are generating the catalog_returns table
-        // in isolation. Otherwise catalog_returns is generated during the generation of the catalog_sales table
-        RowGeneratorResult salesAndReturnsResult = parentRowGenerator.generateRowAndChildRows(rowNumber, session, null, this);
-        if (salesAndReturnsResult.getRowAndChildRows().size() == 2) {
-            return new RowGeneratorResult(ImmutableList.of(salesAndReturnsResult.getRowAndChildRows().get(1)), salesAndReturnsResult.shouldEndRow());
-        }
-        else {
-            return new RowGeneratorResult(emptyList(), salesAndReturnsResult.shouldEndRow());  // no return occurred for given sale
-        }
+        // The catalog returns table is a child of the catalog_sales table because you can only return things that have already been purchased
+        throw new RuntimeException("Generating catalog returns is not supported as a stand alone");
     }
 
-    public TableRow generateRow(long rowNumber, Session session, CatalogSalesRow salesRow)
+    public TableRow generateRow(MemorySegment rowSegment)
     {
-        generateRow(rowNumber);
+        this.rowSegment = rowSegment;
+        if (nativeInt(CR_VALID) == 0) {
+            // no row this round, just reutrn
+            return null;
+        }
+
         return new CatalogReturnsRow(nativeLong(CR_RETURNED_DATE_SK),
                 nativeLong(CR_RETURNED_TIME_SK),
                 nativeLong(CR_ITEM_SK),

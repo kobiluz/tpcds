@@ -100,8 +100,8 @@ public abstract class AbstractRowGenerator
     protected void generateRow(long rowNumber)
     {
         try {
-            if ((int) generateRowMethod.invokeExact(rowSegment, rowNumber) == 0) {
-                if ((int) endRowMethod.invokeExact(tableNumber) == 0) {
+            if ((int) generateRowMethod.invokeExact(rowSegment, rowNumber) >= 0) {
+                if ((int) endRowMethod.invokeExact(tableNumber) >= 0) {
                     return;
                 }
             }

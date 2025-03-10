@@ -74,7 +74,7 @@ public class CatalogReturnsRowGenerator
         }
     }
 
-    public TableRow generateRow(long rowNumber, Session session, CatalogSalesRow salesRow)
+    public TableRow generateRow(Session session, CatalogSalesRow salesRow)
     {
         long nullBitMap = createNullBitMap(CATALOG_RETURNS, getRandomNumberStream(CR_NULLS));
 
