@@ -16,15 +16,15 @@ package io.trino.tpcds.column;
 import io.trino.tpcds.Table;
 
 import static io.trino.tpcds.Table.INCOME_BAND;
-import static io.trino.tpcds.column.ColumnTypes.IDENTIFIER;
 import static io.trino.tpcds.column.ColumnTypes.INTEGER;
 
 public enum IncomeBandColumn
         implements Column
 {
-    IB_INCOME_BAND_SK(IDENTIFIER),
+    IB_INCOME_BAND_SK(INTEGER),
     IB_LOWER_BOUND(INTEGER),
-    IB_UPPER_BOUND(INTEGER);
+    IB_UPPER_BOUND(INTEGER),
+    IB_PADDING(INTEGER);
 
     private final ColumnType type;
 

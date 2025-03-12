@@ -16,7 +16,6 @@ package io.trino.tpcds.column;
 import io.trino.tpcds.Table;
 
 import static io.trino.tpcds.Table.DATE_DIM;
-import static io.trino.tpcds.column.ColumnTypes.DATE;
 import static io.trino.tpcds.column.ColumnTypes.IDENTIFIER;
 import static io.trino.tpcds.column.ColumnTypes.INTEGER;
 import static io.trino.tpcds.column.ColumnTypes.character;
@@ -26,7 +25,7 @@ public enum DateDimColumn
 {
     D_DATE_SK(IDENTIFIER),
     D_DATE_ID(character(16)),
-    D_DATE(DATE),
+    D_DAY_NAME(character(9)),
     D_MONTH_SEQ(INTEGER),
     D_WEEK_SEQ(INTEGER),
     D_QUARTER_SEQ(INTEGER),
@@ -38,20 +37,19 @@ public enum DateDimColumn
     D_FY_YEAR(INTEGER),
     D_FY_QUARTER_SEQ(INTEGER),
     D_FY_WEEK_SEQ(INTEGER),
-    D_DAY_NAME(character(9)),
-    D_QUARTER_NAME(character(6)),
-    D_HOLIDAY(character(1)),
-    D_WEEKEND(character(1)),
-    D_FOLLOWING_HOLIDAY(character(1)),
+    D_HOLIDAY(INTEGER),
+    D_WEEKEND(INTEGER),
+    D_FOLLOWING_HOLIDAY(INTEGER),
     D_FIRST_DOM(INTEGER),
     D_LAST_DOM(INTEGER),
     D_SAME_DAY_LY(INTEGER),
     D_SAME_DAY_LQ(INTEGER),
-    D_CURRENT_DAY(character(1)),
-    D_CURRENT_WEEK(character(1)),
-    D_CURRENT_MONTH(character(1)),
-    D_CURRENT_QUARTER(character(1)),
-    D_CURRENT_YEAR(character(1));
+    D_CURRENT_DAY(INTEGER),
+    D_CURRENT_WEEK(INTEGER),
+    D_CURRENT_MONTH(INTEGER),
+    D_CURRENT_QUARTER(INTEGER),
+    D_CURRENT_YEAR(INTEGER),
+    D_PADDING(INTEGER);
 
     private final ColumnType type;
 

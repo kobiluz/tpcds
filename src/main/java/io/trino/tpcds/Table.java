@@ -83,9 +83,12 @@ import io.trino.tpcds.row.generator.CustomerDemographicsRowNativeGenerator;
 import io.trino.tpcds.row.generator.CustomerRowGenerator;
 import io.trino.tpcds.row.generator.CustomerRowNativeGenerator;
 import io.trino.tpcds.row.generator.DateDimRowGenerator;
+import io.trino.tpcds.row.generator.DateDimRowNativeGenerator;
 import io.trino.tpcds.row.generator.DbgenVersionRowGenerator;
 import io.trino.tpcds.row.generator.HouseholdDemographicsRowGenerator;
+import io.trino.tpcds.row.generator.HouseholdDemographicsRowNativeGenerator;
 import io.trino.tpcds.row.generator.IncomeBandRowGenerator;
+import io.trino.tpcds.row.generator.IncomeBandRowNativeGenerator;
 import io.trino.tpcds.row.generator.InventoryRowGenerator;
 import io.trino.tpcds.row.generator.ItemRowGenerator;
 import io.trino.tpcds.row.generator.PromotionRowGenerator;
@@ -164,24 +167,24 @@ public enum Table
     DATE_DIM(new TableFlagsBuilder().build(),
             0,
             0x03,
-            DateDimRowGenerator.class,
+            TableGenerator.isNativeGenerator() ? DateDimRowNativeGenerator.class : DateDimRowGenerator.class,
             DateDimGeneratorColumn.values(),
             DateDimColumn.values(),
-            new ScalingInfo(0, new int[] {0, 73049, 73049, 73049, 73049, 73049, 73049, 73049, 73049, 73049}, 0)),
+            new ScalingInfo(0, new int[] {0, 73049, 73049, 73049, 73049, 73049, 73049, 73049, 73049, 73049}, TableGenerator.getNativeRowCount(7))),
     HOUSEHOLD_DEMOGRAPHICS(new TableFlagsBuilder().build(),
             0,
             0x01,
-            HouseholdDemographicsRowGenerator.class,
+            TableGenerator.isNativeGenerator() ? HouseholdDemographicsRowNativeGenerator.class : HouseholdDemographicsRowGenerator.class,
             HouseholdDemographicsGeneratorColumn.values(),
             HouseholdDemographicsColumn.values(),
-            new ScalingInfo(0, new int[] {0, 7200, 7200, 7200, 7200, 7200, 7200, 7200, 7200, 7200}, 0)),
+            new ScalingInfo(0, new int[] {0, 7200, 7200, 7200, 7200, 7200, 7200, 7200, 7200, 7200}, TableGenerator.getNativeRowCount(8))),
     INCOME_BAND(new TableFlagsBuilder().build(),
             0,
             0x1,
-            IncomeBandRowGenerator.class,
+            TableGenerator.isNativeGenerator() ? IncomeBandRowNativeGenerator.class : IncomeBandRowGenerator.class,
             IncomeBandGeneratorColumn.values(),
             IncomeBandColumn.values(),
-            new ScalingInfo(0, new int[] {0, 20, 20, 20, 20, 20, 20, 20, 20, 20}, 0)),
+            new ScalingInfo(0, new int[] {0, 20, 20, 20, 20, 20, 20, 20, 20, 20}, TableGenerator.getNativeRowCount(9))),
     INVENTORY(new TableFlagsBuilder().setIsDateBased().build(),
             1000,
             0x07,
