@@ -120,6 +120,7 @@ public class CustomerRowGenerator
                 cBirthCountry,
                 cEmailAddress,
                 cLastReviewDate,
+                null,
                 createNullBitMap(CUSTOMER, getRandomNumberStream(C_NULLS))));
     }
 }

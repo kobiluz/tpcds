@@ -74,6 +74,7 @@ public class CustomerRow
             String cBirthCountry,
             String cEmailAddress,
             int cLastReviewDate,
+            String cLogin,
             long nullBitMap)
     {
         super(nullBitMap, C_CUSTOMER_SK);
@@ -92,7 +93,7 @@ public class CustomerRow
         this.cBirthMonth = cBirthMonth;
         this.cBirthYear = cBirthYear;
         this.cBirthCountry = cBirthCountry;
-        this.cLogin = null;  // never gets set to anything
+        this.cLogin = cLogin;
         this.cEmailAddress = cEmailAddress;
         this.cLastReviewDate = cLastReviewDate;
     }

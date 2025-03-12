@@ -31,6 +31,7 @@ import static io.trino.tpcds.random.RandomValueGenerator.generateUniformRandomIn
 import static java.lang.foreign.ValueLayout.ADDRESS;
 import static java.lang.foreign.ValueLayout.JAVA_INT;
 import static java.lang.foreign.ValueLayout.JAVA_LONG;
+import static java.nio.charset.StandardCharsets.ISO_8859_1;
 
 public abstract class AbstractRowGenerator
         implements RowGenerator
@@ -114,7 +115,7 @@ public abstract class AbstractRowGenerator
 
     protected String nativeString(Column column)
     {
-        return rowSegment.get(ADDRESS, columnToOffsetMap.get(column.getName())).reinterpret((long) column.getType().getPrecision().get() + 1).getString(0);
+        return rowSegment.get(ADDRESS, columnToOffsetMap.get(column.getName())).reinterpret((long) column.getType().getPrecision().get() + 1).getString(0, ISO_8859_1);
     }
 
     protected long nativeLong(Column column)

@@ -27,8 +27,8 @@ public enum CustomerDemographicsColumn
     CD_GENDER(character(1)),
     CD_MARITAL_STATUS(character(1)),
     CD_EDUCATION_STATUS(character(20)),
-    CD_PURCHASE_ESTIMATE(INTEGER),
     CD_CREDIT_RATING(character(10)),
+    CD_PURCHASE_ESTIMATE(INTEGER),
     CD_DEP_COUNT(INTEGER),
     CD_DEP_EMPLOYED_COUNT(INTEGER),
     CD_DEP_COLLEGE_COUNT(INTEGER);

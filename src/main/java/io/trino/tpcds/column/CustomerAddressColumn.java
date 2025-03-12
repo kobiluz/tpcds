@@ -17,8 +17,8 @@ import io.trino.tpcds.Table;
 
 import static io.trino.tpcds.Table.CUSTOMER_ADDRESS;
 import static io.trino.tpcds.column.ColumnTypes.IDENTIFIER;
+import static io.trino.tpcds.column.ColumnTypes.INTEGER;
 import static io.trino.tpcds.column.ColumnTypes.character;
-import static io.trino.tpcds.column.ColumnTypes.decimal;
 import static io.trino.tpcds.column.ColumnTypes.varchar;
 
 public enum CustomerAddressColumn
@@ -26,17 +26,19 @@ public enum CustomerAddressColumn
 {
     CA_ADDRESS_SK(IDENTIFIER),
     CA_ADDRESS_ID(character(16)),
-    CA_STREET_NUMBER(character(10)),
+    CA_LOCATION_TYPE(character(20)),
     CA_STREET_NAME(varchar(60)),
+    CA_STREET_NAME2(varchar(60)),
     CA_STREET_TYPE(character(15)),
     CA_SUITE_NUMBER(character(10)),
     CA_CITY(varchar(60)),
     CA_COUNTY(varchar(30)),
     CA_STATE(character(2)),
-    CA_ZIP(character(10)),
     CA_COUNTRY(varchar(20)),
-    CA_GMT_OFFSET(decimal(5, 2)),
-    CA_LOCATION_TYPE(character(20));
+    CA_STREET_NUMBER(INTEGER),
+    CA_ZIP(INTEGER),
+    CA_GMT_OFFSET(INTEGER),
+    CA_PADDING(INTEGER);
 
     private final ColumnType type;
 

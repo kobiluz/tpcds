@@ -77,8 +77,11 @@ import io.trino.tpcds.row.generator.CatalogReturnsRowNativeGenerator;
 import io.trino.tpcds.row.generator.CatalogSalesRowGenerator;
 import io.trino.tpcds.row.generator.CatalogSalesRowNativeGenerator;
 import io.trino.tpcds.row.generator.CustomerAddressRowGenerator;
+import io.trino.tpcds.row.generator.CustomerAddressRowNativeGenerator;
 import io.trino.tpcds.row.generator.CustomerDemographicsRowGenerator;
+import io.trino.tpcds.row.generator.CustomerDemographicsRowNativeGenerator;
 import io.trino.tpcds.row.generator.CustomerRowGenerator;
+import io.trino.tpcds.row.generator.CustomerRowNativeGenerator;
 import io.trino.tpcds.row.generator.DateDimRowGenerator;
 import io.trino.tpcds.row.generator.DbgenVersionRowGenerator;
 import io.trino.tpcds.row.generator.HouseholdDemographicsRowGenerator;
@@ -140,24 +143,24 @@ public enum Table
     CUSTOMER(new TableFlagsBuilder().build(),
             700,
             0x13,
-            CustomerRowGenerator.class,
+            TableGenerator.isNativeGenerator() ? CustomerRowNativeGenerator.class : CustomerRowGenerator.class,
             CustomerGeneratorColumn.values(),
             CustomerColumn.values(),
-            new ScalingInfo(3, new int[] {0, 100, 500, 2000, 5000, 12000, 30000, 65000, 80000, 100000}, 0)),
+            new ScalingInfo(3, new int[] {0, 100, 500, 2000, 5000, 12000, 30000, 65000, 80000, 100000}, TableGenerator.getNativeRowCount(4))),
     CUSTOMER_ADDRESS(new TableFlagsBuilder().build(),
             600,
             0x3,
-            CustomerAddressRowGenerator.class,
+            TableGenerator.isNativeGenerator() ? CustomerAddressRowNativeGenerator.class : CustomerAddressRowGenerator.class,
             CustomerAddressGeneratorColumn.values(),
             CustomerAddressColumn.values(),
-            new ScalingInfo(3, new int[] {0, 50, 250, 1000, 2500, 6000, 15000, 32500, 40000, 50000}, 0)),
+            new ScalingInfo(3, new int[] {0, 50, 250, 1000, 2500, 6000, 15000, 32500, 40000, 50000}, TableGenerator.getNativeRowCount(5))),
     CUSTOMER_DEMOGRAPHICS(new TableFlagsBuilder().build(),
             0,
             0x1,
-            CustomerDemographicsRowGenerator.class,
+            TableGenerator.isNativeGenerator() ? CustomerDemographicsRowNativeGenerator.class : CustomerDemographicsRowGenerator.class,
             CustomerDemographicsGeneratorColumn.values(),
             CustomerDemographicsColumn.values(),
-            new ScalingInfo(2, new int[] {0, 19208, 19208, 19208, 19208, 19208, 19208, 19208, 19208, 19208}, 0)),
+            new ScalingInfo(2, new int[] {0, 19208, 19208, 19208, 19208, 19208, 19208, 19208, 19208, 19208}, TableGenerator.getNativeRowCount(6))),
     DATE_DIM(new TableFlagsBuilder().build(),
             0,
             0x03,
