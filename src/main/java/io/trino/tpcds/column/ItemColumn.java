@@ -17,10 +17,10 @@ import io.trino.tpcds.Table;
 
 import static io.trino.tpcds.Table.ITEM;
 import static io.trino.tpcds.column.ColumnTypes.DATE;
+import static io.trino.tpcds.column.ColumnTypes.DECIMAL;
 import static io.trino.tpcds.column.ColumnTypes.IDENTIFIER;
 import static io.trino.tpcds.column.ColumnTypes.INTEGER;
 import static io.trino.tpcds.column.ColumnTypes.character;
-import static io.trino.tpcds.column.ColumnTypes.decimal;
 import static io.trino.tpcds.column.ColumnTypes.varchar;
 
 public enum ItemColumn
@@ -31,23 +31,32 @@ public enum ItemColumn
     I_REC_START_DATE(DATE),
     I_REC_END_DATE(DATE),
     I_ITEM_DESC(varchar(200)),
-    I_CURRENT_PRICE(decimal(7, 2)),
-    I_WHOLESALE_COST(decimal(7, 2)),
-    I_BRAND_ID(INTEGER),
+    I_BRAND_ID(IDENTIFIER),
     I_BRAND(character(50)),
-    I_CLASS_ID(INTEGER),
+    I_CLASS_ID(IDENTIFIER),
     I_CLASS(character(50)),
-    I_CATEGORY_ID(INTEGER),
+    I_CATEGORY_ID(IDENTIFIER),
     I_CATEGORY(character(50)),
-    I_MANUFACT_ID(INTEGER),
+    I_MANUFACT_ID(IDENTIFIER),
     I_MANUFACT(character(50)),
     I_SIZE(character(20)),
     I_FORMULATION(character(20)),
     I_COLOR(character(20)),
     I_UNITS(character(10)),
     I_CONTAINER(character(10)),
-    I_MANAGER_ID(INTEGER),
-    I_PRODUCT_NAME(character(50));
+    I_MANAGER_ID(IDENTIFIER),
+    I_PRODUCT_NAME(character(50)),
+    I_PROMO_SK(IDENTIFIER),
+    I_CURRENT_PRICE_NUMBER(DECIMAL),
+    I_CURRENT_PRICE_PRECISION(INTEGER),
+    I_CURRENT_PRICE_SCALE(INTEGER),
+    I_CURRENT_PRICE_FLAGS(INTEGER),
+    I_PADDING1(INTEGER),
+    I_WHOLESALE_COST_NUMBER(DECIMAL),
+    I_WHOLESALE_COST_PRECISION(INTEGER),
+    I_WHOLESALE_COST_SCALE(INTEGER),
+    I_WHOLESALE_COST_FLAGS(INTEGER),
+    I_PADDING2(INTEGER);
 
     private final ColumnType type;
 

@@ -25,7 +25,8 @@ public enum InventoryColumn
     INV_DATE_SK(IDENTIFIER),
     INV_ITEM_SK(IDENTIFIER),
     INV_WAREHOUSE_SK(IDENTIFIER),
-    INV_QUANTITY_ON_HAND(INTEGER);
+    INV_QUANTITY_ON_HAND(INTEGER),
+    INV_PADDING(INTEGER);
 
     private final ColumnType type;
 

@@ -90,8 +90,11 @@ import io.trino.tpcds.row.generator.HouseholdDemographicsRowNativeGenerator;
 import io.trino.tpcds.row.generator.IncomeBandRowGenerator;
 import io.trino.tpcds.row.generator.IncomeBandRowNativeGenerator;
 import io.trino.tpcds.row.generator.InventoryRowGenerator;
+import io.trino.tpcds.row.generator.InventoryRowNativeGenerator;
 import io.trino.tpcds.row.generator.ItemRowGenerator;
+import io.trino.tpcds.row.generator.ItemRowNativeGenerator;
 import io.trino.tpcds.row.generator.PromotionRowGenerator;
+import io.trino.tpcds.row.generator.PromotionRowNativeGenerator;
 import io.trino.tpcds.row.generator.ReasonRowGenerator;
 import io.trino.tpcds.row.generator.ReasonRowNativeGenerator;
 import io.trino.tpcds.row.generator.RowGenerator;
@@ -188,24 +191,24 @@ public enum Table
     INVENTORY(new TableFlagsBuilder().setIsDateBased().build(),
             1000,
             0x07,
-            InventoryRowGenerator.class,
+            TableGenerator.isNativeGenerator() ? InventoryRowNativeGenerator.class : InventoryRowGenerator.class,
             InventoryGeneratorColumn.values(),
             InventoryColumn.values(),
-            new ScalingInfo(0, new int[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 0)), // the inventory table is scaled based on item and warehouse
+            new ScalingInfo(0, new int[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, TableGenerator.getNativeRowCount(10))), // the inventory table is scaled based on item and warehouse
     ITEM(new TableFlagsBuilder().setKeepsHistory().build(),
             50,
             0x0B,
-            ItemRowGenerator.class,
+            TableGenerator.isNativeGenerator() ? ItemRowNativeGenerator.class : ItemRowGenerator.class,
             ItemGeneratorColumn.values(),
             ItemColumn.values(),
-            new ScalingInfo(3, new int[] {0, 9, 51, 102, 132, 150, 180, 201, 231, 251}, 0)),
+            new ScalingInfo(3, new int[] {0, 9, 51, 102, 132, 150, 180, 201, 231, 251}, TableGenerator.getNativeRowCount(11))),
     PROMOTION(new TableFlagsBuilder().build(),
             200,
             0x3,
-            PromotionRowGenerator.class,
+            TableGenerator.isNativeGenerator() ? PromotionRowNativeGenerator.class : PromotionRowGenerator.class,
             PromotionGeneratorColumn.values(),
             PromotionColumn.values(),
-            new ScalingInfo(0, new int[] {0, 300, 500, 1000, 1300, 1500, 1800, 2000, 2300, 2500}, 0)),
+            new ScalingInfo(0, new int[] {0, 300, 500, 1000, 1300, 1500, 1800, 2000, 2300, 2500}, TableGenerator.getNativeRowCount(12))),
     REASON(new TableFlagsBuilder().build(),
             0,
             0x03,

@@ -16,10 +16,10 @@ package io.trino.tpcds.column;
 import io.trino.tpcds.Table;
 
 import static io.trino.tpcds.Table.PROMOTION;
+import static io.trino.tpcds.column.ColumnTypes.DECIMAL;
 import static io.trino.tpcds.column.ColumnTypes.IDENTIFIER;
 import static io.trino.tpcds.column.ColumnTypes.INTEGER;
 import static io.trino.tpcds.column.ColumnTypes.character;
-import static io.trino.tpcds.column.ColumnTypes.decimal;
 import static io.trino.tpcds.column.ColumnTypes.varchar;
 
 public enum PromotionColumn
@@ -30,20 +30,23 @@ public enum PromotionColumn
     P_START_DATE_SK(IDENTIFIER),
     P_END_DATE_SK(IDENTIFIER),
     P_ITEM_SK(IDENTIFIER),
-    P_COST(decimal(15, 2)),
-    P_RESPONSE_TARGE(INTEGER),
     P_PROMO_NAME(character(50)),
-    P_CHANNEL_DMAIL(character(1)),
-    P_CHANNEL_EMAIL(character(1)),
-    P_CHANNEL_CATALOG(character(1)),
-    P_CHANNEL_TV(character(1)),
-    P_CHANNEL_RADIO(character(1)),
-    P_CHANNEL_PRESS(character(1)),
-    P_CHANNEL_EVENT(character(1)),
-    P_CHANNEL_DEMO(character(1)),
     P_CHANNEL_DETAILS(varchar(100)),
     P_PURPOSE(character(15)),
-    P_DISCOUNT_ACTIVE(character(1));
+    P_RESPONSE_TARGET(INTEGER),
+    P_CHANNEL_DMAIL(INTEGER),
+    P_CHANNEL_EMAIL(INTEGER),
+    P_CHANNEL_CATALOG(INTEGER),
+    P_CHANNEL_TV(INTEGER),
+    P_CHANNEL_RADIO(INTEGER),
+    P_CHANNEL_PRESS(INTEGER),
+    P_CHANNEL_EVENT(INTEGER),
+    P_CHANNEL_DEMO(INTEGER),
+    P_DISCOUNT_ACTIVE(INTEGER),
+    P_COST_NUMBER(DECIMAL),
+    P_COST_PRECISION(INTEGER),
+    P_COST_SCALE(INTEGER),
+    P_COST_FLAGS(INTEGER);
 
     private final ColumnType type;
 
