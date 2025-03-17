@@ -99,8 +99,10 @@ import io.trino.tpcds.row.generator.ReasonRowGenerator;
 import io.trino.tpcds.row.generator.ReasonRowNativeGenerator;
 import io.trino.tpcds.row.generator.RowGenerator;
 import io.trino.tpcds.row.generator.ShipModeRowGenerator;
+import io.trino.tpcds.row.generator.ShipModeRowNativeGenerator;
 import io.trino.tpcds.row.generator.StoreReturnsRowGenerator;
 import io.trino.tpcds.row.generator.StoreRowGenerator;
+import io.trino.tpcds.row.generator.StoreRowNativeGenerator;
 import io.trino.tpcds.row.generator.StoreSalesRowGenerator;
 import io.trino.tpcds.row.generator.TimeDimRowGenerator;
 import io.trino.tpcds.row.generator.WarehouseRowGenerator;
@@ -219,17 +221,17 @@ public enum Table
     SHIP_MODE(new TableFlagsBuilder().build(),
             0,
             0x03,
-            ShipModeRowGenerator.class,
+            TableGenerator.isNativeGenerator() ? ShipModeRowNativeGenerator.class : ShipModeRowGenerator.class,
             ShipModeGeneratorColumn.values(),
             ShipModeColumn.values(),
-            new ScalingInfo(0, new int[] {0, 20, 20, 20, 20, 20, 20, 20, 20, 20}, 0)),
+            new ScalingInfo(0, new int[] {0, 20, 20, 20, 20, 20, 20, 20, 20, 20}, TableGenerator.getNativeRowCount(14))),
     STORE(new TableFlagsBuilder().setKeepsHistory().setIsSmall().build(),
             100,
             0xB,
-            StoreRowGenerator.class,
+            TableGenerator.isNativeGenerator() ? StoreRowNativeGenerator.class : StoreRowGenerator.class,
             StoreGeneratorColumn.values(),
             StoreColumn.values(),
-            new ScalingInfo(0, new int[] {0, 6, 51, 201, 402, 501, 675, 750, 852, 951}, 0)),
+            new ScalingInfo(0, new int[] {0, 6, 51, 201, 402, 501, 675, 750, 852, 951}, TableGenerator.getNativeRowCount(15))),
     STORE_RETURNS(new TableFlagsBuilder().build(),
             700,
             0x204,
