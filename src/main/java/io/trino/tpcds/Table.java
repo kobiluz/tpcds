@@ -101,9 +101,11 @@ import io.trino.tpcds.row.generator.RowGenerator;
 import io.trino.tpcds.row.generator.ShipModeRowGenerator;
 import io.trino.tpcds.row.generator.ShipModeRowNativeGenerator;
 import io.trino.tpcds.row.generator.StoreReturnsRowGenerator;
+import io.trino.tpcds.row.generator.StoreReturnsRowNativeGenerator;
 import io.trino.tpcds.row.generator.StoreRowGenerator;
 import io.trino.tpcds.row.generator.StoreRowNativeGenerator;
 import io.trino.tpcds.row.generator.StoreSalesRowGenerator;
+import io.trino.tpcds.row.generator.StoreSalesRowNativeGenerator;
 import io.trino.tpcds.row.generator.TimeDimRowGenerator;
 import io.trino.tpcds.row.generator.WarehouseRowGenerator;
 import io.trino.tpcds.row.generator.WebPageRowGenerator;
@@ -235,17 +237,17 @@ public enum Table
     STORE_RETURNS(new TableFlagsBuilder().build(),
             700,
             0x204,
-            StoreReturnsRowGenerator.class,
+            TableGenerator.isNativeGenerator() ? StoreReturnsRowNativeGenerator.class : StoreReturnsRowGenerator.class,
             StoreReturnsGeneratorColumn.values(),
             StoreReturnsColumn.values(),
-            new ScalingInfo(4, new int[] {0, 24, 240, 2400, 7200, 24000, 72000, 240000, 720000, 2400000}, 0)),
+            new ScalingInfo(4, new int[] {0, 24, 240, 2400, 7200, 24000, 72000, 240000, 720000, 2400000}, TableGenerator.getNativeRowCount(16))),
     STORE_SALES(new TableFlagsBuilder().setIsDateBased().build(),
             900,
             0x204,
-            StoreSalesRowGenerator.class,
+            TableGenerator.isNativeGenerator() ? StoreSalesRowNativeGenerator.class : StoreSalesRowGenerator.class,
             StoreSalesGeneratorColumn.values(),
             StoreSalesColumn.values(),
-            new ScalingInfo(4, new int[] {0, 24, 240, 2400, 7200, 24000, 72000, 240000, 720000, 2400000}, 0)),
+            new ScalingInfo(4, new int[] {0, 24, 240, 2400, 7200, 24000, 72000, 240000, 720000, 2400000}, TableGenerator.getNativeRowCount(17))),
     TIME_DIM(new TableFlagsBuilder().build(),
             0,
             0x03,

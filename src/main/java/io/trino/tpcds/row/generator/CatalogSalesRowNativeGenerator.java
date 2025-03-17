@@ -163,7 +163,6 @@ public class CatalogSalesRowNativeGenerator
 
         try {
             generateRowMethod = nativeMakeRowMethod(MAKE_ROW_METHOD_NAME);
-
             csRowLayout = MemoryLayout.structLayout(
                     columnToLayoutMap.get(CS_SOLD_DATE_SK.getName()),
                     columnToLayoutMap.get(CS_SOLD_TIME_SK.getName()),
