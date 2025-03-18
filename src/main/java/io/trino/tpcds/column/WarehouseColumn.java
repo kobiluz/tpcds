@@ -19,7 +19,6 @@ import static io.trino.tpcds.Table.WAREHOUSE;
 import static io.trino.tpcds.column.ColumnTypes.IDENTIFIER;
 import static io.trino.tpcds.column.ColumnTypes.INTEGER;
 import static io.trino.tpcds.column.ColumnTypes.character;
-import static io.trino.tpcds.column.ColumnTypes.decimal;
 import static io.trino.tpcds.column.ColumnTypes.varchar;
 
 public enum WarehouseColumn
@@ -29,16 +28,19 @@ public enum WarehouseColumn
     W_WAREHOUSE_ID(character(16)),
     W_WAREHOUSE_NAME(varchar(20)),
     W_WAREHOUSE_SQ_FT(INTEGER),
-    W_STREET_NUMBER(character(10)),
+    W_PADDING1(INTEGER),
     W_STREET_NAME(varchar(60)),
+    W_STREET_NAME2(varchar(60)),
     W_STREET_TYPE(character(15)),
     W_SUITE_NUMBER(character(10)),
     W_CITY(varchar(60)),
     W_COUNTY(varchar(30)),
     W_STATE(character(2)),
-    W_ZIP(character(10)),
     W_COUNTRY(varchar(20)),
-    W_GMT_OFFSET(decimal(5, 2));
+    W_STREET_NUMBER(INTEGER),
+    W_ZIP(INTEGER),
+    W_GMT_OFFSET(INTEGER),
+    W_PADDING2(INTEGER);
 
     private final ColumnType type;
 

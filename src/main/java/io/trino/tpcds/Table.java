@@ -107,11 +107,15 @@ import io.trino.tpcds.row.generator.StoreRowNativeGenerator;
 import io.trino.tpcds.row.generator.StoreSalesRowGenerator;
 import io.trino.tpcds.row.generator.StoreSalesRowNativeGenerator;
 import io.trino.tpcds.row.generator.TimeDimRowGenerator;
+import io.trino.tpcds.row.generator.TimeDimRowNativeGenerator;
 import io.trino.tpcds.row.generator.WarehouseRowGenerator;
+import io.trino.tpcds.row.generator.WarehouseRowNativeGenerator;
 import io.trino.tpcds.row.generator.WebPageRowGenerator;
+import io.trino.tpcds.row.generator.WebPageRowNativeGenerator;
 import io.trino.tpcds.row.generator.WebReturnsRowGenerator;
 import io.trino.tpcds.row.generator.WebSalesRowGenerator;
 import io.trino.tpcds.row.generator.WebSiteRowGenerator;
+import io.trino.tpcds.row.generator.WebSiteRowNativeGenerator;
 
 import java.util.Arrays;
 import java.util.List;
@@ -251,24 +255,24 @@ public enum Table
     TIME_DIM(new TableFlagsBuilder().build(),
             0,
             0x03,
-            TimeDimRowGenerator.class,
+            TableGenerator.isNativeGenerator() ? TimeDimRowNativeGenerator.class : TimeDimRowGenerator.class,
             TimeDimGeneratorColumn.values(),
             TimeDimColumn.values(),
-            new ScalingInfo(0, new int[] {0, 86400, 86400, 86400, 86400, 86400, 86400, 86400, 86400, 86400}, 0)),
+            new ScalingInfo(0, new int[] {0, 86400, 86400, 86400, 86400, 86400, 86400, 86400, 86400, 86400}, TableGenerator.getNativeRowCount(18))),
     WAREHOUSE(new TableFlagsBuilder().setIsSmall().build(),
             200,
             0x03,
-            WarehouseRowGenerator.class,
+            TableGenerator.isNativeGenerator() ? WarehouseRowNativeGenerator.class : WarehouseRowGenerator.class,
             WarehouseGeneratorColumn.values(),
             WarehouseColumn.values(),
-            new ScalingInfo(0, new int[] {0, 5, 10, 15, 17, 20, 22, 25, 27, 30}, 0)),
+            new ScalingInfo(0, new int[] {0, 5, 10, 15, 17, 20, 22, 25, 27, 30}, TableGenerator.getNativeRowCount(19))),
     WEB_PAGE(new TableFlagsBuilder().setKeepsHistory().build(),
             250,
             0x0B,
-            WebPageRowGenerator.class,
+            TableGenerator.isNativeGenerator() ? WebPageRowNativeGenerator.class : WebPageRowGenerator.class,
             WebPageGeneratorColumn.values(),
             WebPageColumn.values(),
-            new ScalingInfo(0, new int[] {0, 30, 100, 1020, 1302, 1500, 1800, 2001, 2301, 2502}, 0)),
+            new ScalingInfo(0, new int[] {0, 30, 100, 1020, 1302, 1500, 1800, 2001, 2301, 2502}, TableGenerator.getNativeRowCount(20))),
     WEB_RETURNS(new TableFlagsBuilder().build(),
             900,
             0x2004,
@@ -286,10 +290,10 @@ public enum Table
     WEB_SITE(new TableFlagsBuilder().setKeepsHistory().setIsSmall().build(),
             100,
             0x0B,
-            WebSiteRowGenerator.class,
+            TableGenerator.isNativeGenerator() ? WebSiteRowNativeGenerator.class : WebSiteRowGenerator.class,
             WebSiteGeneratorColumn.values(),
             WebSiteColumn.values(),
-            new ScalingInfo(0, new int[] {0, 15, 21, 12, 21, 27, 33, 39, 42, 48}, 0)),
+            new ScalingInfo(0, new int[] {0, 15, 21, 12, 21, 27, 33, 39, 42, 48}, TableGenerator.getNativeRowCount(23))),
     DBGEN_VERSION(new TableFlagsBuilder().build(),
             0,
             0x0,

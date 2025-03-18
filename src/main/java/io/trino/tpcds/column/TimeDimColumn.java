@@ -25,14 +25,14 @@ public enum TimeDimColumn
 {
     T_TIME_SK(IDENTIFIER),
     T_TIME_ID(character(16)),
-    T_TIME(INTEGER),
-    T_HOUR(INTEGER),
-    T_MINUTE(INTEGER),
-    T_SECOND(INTEGER),
     T_AM_PM(character(2)),
     T_SHIFT(character(20)),
     T_SUB_SHIFT(character(20)),
-    T_MEAL_TIME(character(20));
+    T_MEAL_TIME(character(20)),
+    T_TIME(INTEGER),
+    T_HOUR(INTEGER),
+    T_MINUTE(INTEGER),
+    T_SECOND(INTEGER);
 
     private final ColumnType type;
 

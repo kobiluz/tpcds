@@ -17,10 +17,10 @@ import io.trino.tpcds.Table;
 
 import static io.trino.tpcds.Table.WEB_SITE;
 import static io.trino.tpcds.column.ColumnTypes.DATE;
+import static io.trino.tpcds.column.ColumnTypes.DECIMAL;
 import static io.trino.tpcds.column.ColumnTypes.IDENTIFIER;
 import static io.trino.tpcds.column.ColumnTypes.INTEGER;
 import static io.trino.tpcds.column.ColumnTypes.character;
-import static io.trino.tpcds.column.ColumnTypes.decimal;
 import static io.trino.tpcds.column.ColumnTypes.varchar;
 
 public enum WebSiteColumn
@@ -31,27 +31,33 @@ public enum WebSiteColumn
     WEB_REC_START_DATE(DATE),
     WEB_REC_END_DATE(DATE),
     WEB_NAME(varchar(50)),
-    WEB_OPEN_DATE_SK(IDENTIFIER),
-    WEB_CLOSE_DATE_SK(IDENTIFIER),
+    WEB_OPEN_DATE_SK(DATE),
+    WEB_CLOSE_DATE_SK(DATE),
     WEB_CLASS(varchar(50)),
     WEB_MANAGER(varchar(40)),
-    WEB_MKT_ID(INTEGER),
-    WEB_MKT_CLASS(varchar(50)),
-    WEB_MKT_DESC(varchar(100)),
+    WEB_MARKET_CLASS(varchar(50)),
+    WEB_MARKET_DESC(varchar(100)),
     WEB_MARKET_MANAGER(varchar(40)),
-    WEB_COMPANY_ID(INTEGER),
     WEB_COMPANY_NAME(character(50)),
-    WEB_STREET_NUMBER(character(10)),
+    WEB_MARKET_ID(INTEGER),
+    WEB_COMPANY_ID(INTEGER),
     WEB_STREET_NAME(varchar(60)),
+    WEB_STREET_NAME2(varchar(60)),
     WEB_STREET_TYPE(character(15)),
     WEB_SUITE_NUMBER(character(10)),
     WEB_CITY(varchar(60)),
     WEB_COUNTY(varchar(30)),
     WEB_STATE(character(2)),
-    WEB_ZIP(character(10)),
     WEB_COUNTRY(varchar(20)),
-    WEB_GMT_OFFSET(decimal(5, 2)),
-    WEB_TAX_PERCENTAGE(decimal(5, 2));
+    WEB_STREET_NUMBER(INTEGER),
+    WEB_ZIP(INTEGER),
+    WEB_GMT_OFFSET(INTEGER),
+    WEB_PADDING1(INTEGER),
+    WEB_TAX_PERCENTAGE_NUMBER(DECIMAL),
+    WEB_TAX_PERCENTAGE_PRECISION(INTEGER),
+    WEB_TAX_PERCENTAGE_SCALE(INTEGER),
+    WEB_TAX_PERCENTAGE_FLAGS(INTEGER),
+    WEB_PADDING2(INTEGER);
 
     private final ColumnType type;
 
