@@ -113,7 +113,9 @@ import io.trino.tpcds.row.generator.WarehouseRowNativeGenerator;
 import io.trino.tpcds.row.generator.WebPageRowGenerator;
 import io.trino.tpcds.row.generator.WebPageRowNativeGenerator;
 import io.trino.tpcds.row.generator.WebReturnsRowGenerator;
+import io.trino.tpcds.row.generator.WebReturnsRowNativeGenerator;
 import io.trino.tpcds.row.generator.WebSalesRowGenerator;
+import io.trino.tpcds.row.generator.WebSalesRowNativeGenerator;
 import io.trino.tpcds.row.generator.WebSiteRowGenerator;
 import io.trino.tpcds.row.generator.WebSiteRowNativeGenerator;
 
@@ -276,17 +278,17 @@ public enum Table
     WEB_RETURNS(new TableFlagsBuilder().build(),
             900,
             0x2004,
-            WebReturnsRowGenerator.class,
+            TableGenerator.isNativeGenerator() ? WebReturnsRowNativeGenerator.class : WebReturnsRowGenerator.class,
             WebReturnsGeneratorColumn.values(),
             WebReturnsColumn.values(),
-            new ScalingInfo(3, new int[] {0, 60, 600, 6000, 18000, 60000, 180000, 600000, 1800000, 6000000}, 0)),
+            new ScalingInfo(3, new int[] {0, 60, 600, 6000, 18000, 60000, 180000, 600000, 1800000, 6000000}, TableGenerator.getNativeRowCount(21))),
     WEB_SALES(new TableFlagsBuilder().setIsDateBased().build(),
             5,
             0x20008,
-            WebSalesRowGenerator.class,
+            TableGenerator.isNativeGenerator() ? WebSalesRowNativeGenerator.class : WebSalesRowGenerator.class,
             WebSalesGeneratorColumn.values(),
             WebSalesColumn.values(),
-            new ScalingInfo(3, new int[] {0, 60, 600, 6000, 18000, 60000, 180000, 600000, 1800000, 6000000}, 0)),
+            new ScalingInfo(3, new int[] {0, 60, 600, 6000, 18000, 60000, 180000, 600000, 1800000, 6000000}, TableGenerator.getNativeRowCount(22))),
     WEB_SITE(new TableFlagsBuilder().setKeepsHistory().setIsSmall().build(),
             100,
             0x0B,
