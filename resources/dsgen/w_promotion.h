@@ -39,15 +39,19 @@
 /*
  * PROMOTION table structure 
  */
-struct W_PROMOTION_TBL {
+struct __attribute__((packed)) W_PROMOTION_TBL {
 	ds_key_t	p_promo_sk;
-	char		p_promo_id[RS_BKEY + 1];
+	//char		p_promo_id[RS_BKEY + 1];
+    char		*p_promo_id;
 	ds_key_t	p_start_date_id;
 	ds_key_t	p_end_date_id;
 	ds_key_t	p_item_sk;
-	decimal_t	p_cost;
+	//char		p_promo_name[RS_P_PROMO_NAME + 1];
+    char		*p_promo_name;
+    //char		p_channel_details[RS_P_CHANNEL_DETAILS + 1];
+    char		*p_channel_details;
+    char		*p_purpose;
 	int			p_response_target;
-	char		p_promo_name[RS_P_PROMO_NAME + 1];
 	int			p_channel_dmail;
 	int			p_channel_email;
 	int			p_channel_catalog;
@@ -56,9 +60,8 @@ struct W_PROMOTION_TBL {
 	int			p_channel_press;
 	int			p_channel_event;
 	int			p_channel_demo;
-	char		p_channel_details[RS_P_CHANNEL_DETAILS + 1];
-	char		*p_purpose;
 	int			p_discount_active;
+    decimal_t	p_cost;
 };
 
 int mk_w_promotion(void *pDest, ds_key_t kIndex);

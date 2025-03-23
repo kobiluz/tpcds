@@ -39,25 +39,28 @@
 /*
  * CUSTOMER table structure 
  */
-struct W_CUSTOMER_TBL {
+struct __attribute__((packed)) W_CUSTOMER_TBL {
 	ds_key_t	c_customer_sk;
-	char		c_customer_id[RS_BKEY + 1];
+	//char		c_customer_id[RS_BKEY + 1];
+    char		*c_customer_id;
 	ds_key_t	c_current_cdemo_sk;
 	ds_key_t	c_current_hdemo_sk;
 	ds_key_t	c_current_addr_sk;
-	int		c_first_shipto_date_id;
-	int		c_first_sales_date_id;
 	char	*c_salutation;
 	char	*c_first_name;
 	char	*c_last_name;
+    char	*c_birth_country;
+    //char	c_login[RS_C_LOGIN + 1];
+    char	*c_login;
+	char	*c_email_address;
+    int		c_first_shipto_date_id;
+    int		c_first_sales_date_id;
 	int		c_preferred_cust_flag;
 	int		c_birth_day;
 	int		c_birth_month;
 	int		c_birth_year;
-	char	*c_birth_country;
-	char	c_login[RS_C_LOGIN + 1];
-	char	c_email_address[RS_C_EMAIL + 1];
 	int		c_last_review_date;
+    int     padding;
 };
 
 

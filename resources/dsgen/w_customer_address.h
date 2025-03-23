@@ -41,11 +41,12 @@
 /*
  * CUSTOMER_ADDRESS table structure 
  */
-struct W_CUSTOMER_ADDRESS_TBL {
+struct __attribute__((packed)) W_CUSTOMER_ADDRESS_TBL {
 	ds_key_t	ca_addr_sk;
-	char		ca_addr_id[RS_BKEY + 1];
-	ds_addr_t	ca_address;
+	//char		ca_addr_id[RS_BKEY + 1];
+    char		*ca_addr_id;
 	char		*ca_location_type;
+	ds_addr_t	ca_address;
 };
 
 int mk_w_customer_address(void *pDest, ds_key_t kIndex);

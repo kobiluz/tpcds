@@ -39,13 +39,15 @@
 /*
  * SHIP_MODE table structure 
  */
-struct W_SHIP_MODE_TBL {
+struct __attribute__((packed)) W_SHIP_MODE_TBL {
 	ds_key_t	sm_ship_mode_sk;
-	char		sm_ship_mode_id[RS_BKEY + 1];
+	//char		sm_ship_mode_id[RS_BKEY + 1];
+    char	*sm_ship_mode_id;
 	char	*sm_type;
 	char	*sm_code;
 	char	*sm_carrier;
-	char	sm_contract[RS_SM_CONTRACT + 1];
+	//char	sm_contract[RS_SM_CONTRACT + 1];
+    char	*sm_contract;
 };
 
 

@@ -38,19 +38,21 @@
 #define DS_ADDRESS_H
 #include "constants.h"
 
-typedef struct DS_ADDR_T {
-	char		suite_num[RS_CC_SUITE_NUM + 1];
-	int			street_num;
+typedef struct __attribute__((packed)) DS_ADDR_T {
 	char		*street_name1;
 	char		*street_name2;
 	char		*street_type;
+    //char		suite_num[RS_CC_SUITE_NUM + 1];
+    char        *suite_num;
 	char		*city;
 	char		*county;
 	char		*state;
-	char		country[RS_CC_COUNTRY + 1];
+	//char		country[RS_CC_COUNTRY + 1];
+    char        *country;
+    int			street_num;
 	int			zip;
-	int			plus4;
 	int			gmt_offset;
+	int			plus4;
 } ds_addr_t;
 
 #define DS_ADDR_SUITE_NUM	0

@@ -46,30 +46,35 @@
 #define STORE_MIN_TAX_PERCENTAGE	"0.00"
 #define STORE_MAX_TAX_PERCENTAGE	"0.11"
 
-
 /*
  * STORE table structure 
  */
-struct W_STORE_TBL {
+struct __attribute__((packed)) W_STORE_TBL {
 	ds_key_t	store_sk;
-	char		store_id[RS_BKEY + 1];
+	//char		store_id[RS_BKEY + 1];
+    char		*store_id;
 	ds_key_t	rec_start_date_id;
 	ds_key_t	rec_end_date_id;
 	ds_key_t	closed_date_id;
-	char		store_name[RS_W_STORE_NAME + 1];
-	int			employees;
-	int			floor_space;
+	//char		store_name[RS_W_STORE_NAME + 1];
+    char		*store_name;
 	char		*hours;
-	char		store_manager[RS_W_STORE_MGR + 1];
-	int			market_id;
-	decimal_t	dTaxPercentage;
+	//char		store_manager[RS_W_STORE_MGR + 1];
+    char		*store_manager;
 	char		*geography_class;
-	char		market_desc[RS_W_MARKET_DESC + 1];
-	char		market_manager[RS_W_MARKET_MGR + 1];
+	//char		market_desc[RS_W_MARKET_DESC + 1];
+    char		*market_desc;
+    //char		market_manager[RS_W_MARKET_MGR + 1];
+	char		*market_manager;
 	ds_key_t	division_id;
 	char		*division_name;
 	ds_key_t	company_id;
 	char		*company_name;
+    int			employees;
+    int			floor_space;
+    int			market_id;
+    int         padding;
+    decimal_t	dTaxPercentage;
 	ds_addr_t	address;
 };
 

@@ -43,7 +43,7 @@
 /*
  * STORE_RETURNS table structure 
  */
-struct W_STORE_RETURNS_TBL {
+struct __attribute__((packed)) W_STORE_RETURNS_TBL {
 	ds_key_t	sr_returned_date_sk;
 	ds_key_t	sr_returned_time_sk;
 	ds_key_t	sr_item_sk;

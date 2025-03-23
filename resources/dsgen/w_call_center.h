@@ -47,27 +47,36 @@
 /*
  * CALL_CENTER table structure 
  */
-struct CALL_CENTER_TBL {
+struct __attribute__((packed)) CALL_CENTER_TBL {
 	ds_key_t	cc_call_center_sk;
-	char		cc_call_center_id[RS_BKEY + 1]; 
+	//char		cc_call_center_id[RS_BKEY + 1];
+    char		*cc_call_center_id;
 	ds_key_t	cc_rec_start_date_id;
 	ds_key_t	cc_rec_end_date_id;
 	ds_key_t	cc_closed_date_id;
 	ds_key_t	cc_open_date_id;
-	char		cc_name[RS_CC_NAME + 1];
+	//char		cc_name[RS_CC_NAME + 1];
+    char		*cc_name;
 	char		*cc_class;
+	char		*cc_hours;
+	//char		cc_manager[RS_CC_MANAGER + 1];
+    char		*cc_manager;
+    //char		cc_market_class[RS_CC_MARKET_CLASS + 1];
+    char		*cc_market_class;
+	//char		cc_market_desc[RS_CC_MARKET_DESC + 1];
+    char		*cc_market_desc;
+	//char		cc_market_manager[RS_CC_MARKET_MANAGER + 1];
+    char		*cc_market_manager;
+	//char		cc_division_name[RS_CC_DIVISION_NAME + 1];
+    char		*cc_division_name;
+	//char		cc_company_name[RS_CC_COMPANY_NAME + 1];
+    char		*cc_company_name;
 	int			cc_employees;
 	int			cc_sq_ft;
-	char		*cc_hours;
-	char		cc_manager[RS_CC_MANAGER + 1];
 	int			cc_market_id;
-	char		cc_market_class[RS_CC_MARKET_CLASS + 1];
-	char		cc_market_desc[RS_CC_MARKET_DESC + 1];
-	char		cc_market_manager[RS_CC_MARKET_MANAGER + 1];
 	int			cc_division_id;
-	char		cc_division_name[RS_CC_DIVISION_NAME + 1];
 	int			cc_company;
-	char		cc_company_name[RS_CC_COMPANY_NAME + 1];
+    int         padding;
 	ds_addr_t	cc_address;
 	decimal_t	cc_tax_percentage;
 };

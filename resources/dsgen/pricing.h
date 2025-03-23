@@ -37,25 +37,29 @@
 #define PRICING_H
 #include "decimal.h"
 
-typedef struct DS_PRICING_T {
+typedef struct __attribute__((packed)) DS_PRICING_T {
+    // sales only starts from here
 	decimal_t wholesale_cost;
 	decimal_t list_price;
 	decimal_t sales_price;
-	int quantity;
 	decimal_t ext_discount_amt;
 	decimal_t ext_sales_price;
 	decimal_t ext_wholesale_cost;
 	decimal_t ext_list_price;
 	decimal_t tax_pct;
-	decimal_t ext_tax;
 	decimal_t coupon_amt;
    decimal_t ship_cost;
-	decimal_t ext_ship_cost;
-	decimal_t net_paid;
-	decimal_t net_paid_inc_tax;
 	decimal_t net_paid_inc_ship;
 	decimal_t net_paid_inc_ship_tax;
 	decimal_t net_profit;
+    // sales and returnes common start from here
+    decimal_t net_paid;
+    decimal_t net_paid_inc_tax;
+    decimal_t ext_tax;
+    decimal_t ext_ship_cost;
+    int quantity;
+    int valid;
+    // returns only starts from here
 	decimal_t refunded_cash;
 	decimal_t reversed_charge;
 	decimal_t store_credit;

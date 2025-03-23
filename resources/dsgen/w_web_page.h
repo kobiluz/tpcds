@@ -36,22 +36,26 @@
 /*
  * WEB_PAGE table structure 
  */
-struct W_WEB_PAGE_TBL {
+struct __attribute__((packed)) W_WEB_PAGE_TBL {
 	ds_key_t	wp_page_sk;
-	char		wp_page_id[RS_BKEY + 1];
-	char		wp_site_id[RS_BKEY + 1];
+	//char		wp_page_id[RS_BKEY + 1];
+    char		*wp_page_id;
+	//char		wp_site_id[RS_BKEY + 1];
+    char		*wp_site_id;
 	ds_key_t	wp_rec_start_date_id;
 	ds_key_t	wp_rec_end_date_id;
 	ds_key_t	wp_creation_date_sk;
 	ds_key_t	wp_access_date_sk;
-	int			wp_autogen_flag;
 	ds_key_t	wp_customer_sk;
-	char		wp_url[RS_WP_URL + 1];
+	//char		wp_url[RS_WP_URL + 1];
+    char		*wp_url;
 	char		*wp_type;
+    int			wp_autogen_flag;
 	int			wp_char_count;
 	int			wp_link_count;
 	int			wp_image_count;
 	int			wp_max_ad_count;
+    int         padding;
 };
 
 int mk_w_web_page(void *pDest, ds_key_t kIndex);

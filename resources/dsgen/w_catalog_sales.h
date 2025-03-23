@@ -41,7 +41,7 @@
 /*
  * CATALOG_SALES table structure 
  */
-struct W_CATALOG_SALES_TBL {
+struct __attribute__((packed)) W_CATALOG_SALES_TBL {
 	ds_key_t	cs_sold_date_sk;
 	ds_key_t	cs_sold_time_sk;
 	ds_key_t	cs_ship_date_sk;

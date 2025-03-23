@@ -36,7 +36,7 @@
 /*
  * WEB_SALES table structure 
  */
-struct W_WEB_SALES_TBL {
+struct __attribute__((packed)) W_WEB_SALES_TBL {
 	ds_key_t	ws_sold_date_sk;
 	ds_key_t	ws_sold_time_sk;
 	ds_key_t	ws_ship_date_sk;

@@ -36,11 +36,12 @@
 /*
  * INVENTORY table structure 
  */
-struct W_INVENTORY_TBL {
+struct __attribute__((packed)) W_INVENTORY_TBL {
 	ds_key_t	inv_date_sk;
 	ds_key_t	inv_item_sk;
 	ds_key_t	inv_warehouse_sk;
 	int			inv_quantity_on_hand;
+    int         padding;
 };
 
 

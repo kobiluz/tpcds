@@ -41,11 +41,14 @@
 /*
  * WAREHOUSE table structure 
  */
-struct W_WAREHOUSE_TBL {
+struct __attribute__((packed)) W_WAREHOUSE_TBL {
 	ds_key_t	w_warehouse_sk;
-	char		w_warehouse_id[RS_BKEY + 1];
-	char		w_warehouse_name[RS_W_WAREHOUSE_NAME + 1];
+	//char		w_warehouse_id[RS_BKEY + 1];
+    char		*w_warehouse_id;
+	//char		w_warehouse_name[RS_W_WAREHOUSE_NAME + 1];
+    char		*w_warehouse_name;
 	int			w_warehouse_sq_ft;
+    int         padding;
 	ds_addr_t	w_address;
 };
 

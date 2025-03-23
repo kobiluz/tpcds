@@ -43,7 +43,7 @@
 /*
  * STORE_SALES table structure 
  */
-struct W_STORE_SALES_TBL {
+struct __attribute__((packed)) W_STORE_SALES_TBL {
 	ds_key_t	ss_sold_date_sk;
 	ds_key_t	ss_sold_time_sk;
 	ds_key_t	ss_sold_item_sk;

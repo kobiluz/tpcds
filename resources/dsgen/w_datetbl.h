@@ -39,9 +39,11 @@
 #ifndef W_DATETBL_H
 #define W_DATETBL_H
 #include "constants.h"
-struct W_DATE_TBL {
+struct __attribute__((packed)) W_DATE_TBL {
 ds_key_t	d_date_sk;
-char		d_date_id[RS_BKEY + 1];
+//char		d_date_id[RS_BKEY + 1];
+char        *d_date_id;
+char		*d_day_name;
 /* this is generated at output from d_date_sk */
 /* date_t		d_date; */
 int			d_month_seq;
@@ -55,7 +57,6 @@ int			d_qoy;
 int			d_fy_year;
 int			d_fy_quarter_seq;
 int			d_fy_week_seq;
-char		*d_day_name;
 /* char		d_quarter_name[RS_D_QUARTER_NAME + 1]; derived at print time */
 int			d_holiday;
 int			d_weekend;
@@ -69,6 +70,7 @@ int			d_current_week;
 int			d_current_month;
 int			d_current_quarter;
 int			d_current_year;
+int         padding;
 };
 
 int mk_w_date(void *pDest, ds_key_t kIndex);

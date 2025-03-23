@@ -45,22 +45,30 @@
 /*
  * WEB_SITE table structure 
  */	
-struct W_WEB_SITE_TBL {
+struct __attribute__((packed)) W_WEB_SITE_TBL {
 	ds_key_t	web_site_sk;
-	char		web_site_id[RS_BKEY + 1];
+	//char		web_site_id[RS_BKEY + 1];
+    char		*web_site_id;
 	ds_key_t	web_rec_start_date_id;
 	ds_key_t	web_rec_end_date_id;
-	char		web_name[RS_WEB_NAME + 1];
+	//char		web_name[RS_WEB_NAME + 1];
+    char		*web_name;
 	ds_key_t	web_open_date;
 	ds_key_t	web_close_date;
-	char		web_class[RS_WEB_CLASS + 1];
-	char		web_manager[RS_WEB_MANAGER + 1];
+	//char		web_class[RS_WEB_CLASS + 1];
+    char		*web_class;
+	//char		web_manager[RS_WEB_MANAGER + 1];
+    char		*web_manager;
+	//char		web_market_class[RS_WEB_MARKET_CLASS + 1];
+    char		*web_market_class;
+	//char		web_market_desc[RS_WEB_MARKET_DESC + 1];
+    char		*web_market_desc;
+	//char		web_market_manager[RS_WEB_MARKET_MANAGER + 1];
+    char		*web_market_manager;
+	//char		web_company_name[RS_WEB_COMPANY_NAME + 1];
+    char		*web_company_name;
 	int			web_market_id;
-	char		web_market_class[RS_WEB_MARKET_CLASS + 1];
-	char		web_market_desc[RS_WEB_MARKET_DESC + 1];
-	char		web_market_manager[RS_WEB_MARKET_MANAGER + 1];
 	int			web_company_id;
-	char		web_company_name[RS_WEB_COMPANY_NAME + 1];
 	ds_addr_t	web_address;
 	decimal_t	web_tax_percentage;
 	};

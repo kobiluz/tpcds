@@ -39,9 +39,10 @@
 /*
  * REASON table structure 
  */
-struct W_REASON_TBL {
+struct __attribute__((packed)) W_REASON_TBL {
 	ds_key_t	r_reason_sk;
-	char		r_reason_id[RS_BKEY + 1];
+	//char		r_reason_id[RS_BKEY + 1];
+    char		*r_reason_id;
 	char		*r_reason_description;
 };
 

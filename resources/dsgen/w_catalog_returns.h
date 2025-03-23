@@ -41,7 +41,7 @@
 /*
  * CATALOG_RETURNS table structure 
  */
-struct W_CATALOG_RETURNS_TBL {
+struct __attribute__((packed)) W_CATALOG_RETURNS_TBL {
 	ds_key_t	cr_returned_date_sk;
 	ds_key_t	cr_returned_time_sk;
 	ds_key_t	cr_item_sk;
@@ -60,11 +60,11 @@ struct W_CATALOG_RETURNS_TBL {
 	ds_key_t	cr_reason_sk;
 	ds_key_t	cr_order_number;
 	ds_pricing_t cr_pricing;
-	decimal_t	cr_fee;
-	decimal_t	cr_refunded_cash;
-	decimal_t	cr_reversed_charge;
-	decimal_t	cr_store_credit;
-	decimal_t	cr_net_loss;
+	//decimal_t	cr_fee;
+	//decimal_t	cr_refunded_cash;
+	//decimal_t	cr_reversed_charge;
+	//decimal_t	cr_store_credit;
+	//decimal_t	cr_net_loss;
 };
 
 int mk_w_catalog_returns(void *pDest, ds_key_t kIndex);

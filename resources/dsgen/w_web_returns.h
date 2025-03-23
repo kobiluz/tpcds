@@ -38,7 +38,7 @@
 /*
  * WEB_RETURNS table structure 
  */
-struct W_WEB_RETURNS_TBL {
+struct __attribute__((packed)) W_WEB_RETURNS_TBL {
 	ds_key_t	wr_returned_date_sk;
 	ds_key_t	wr_returned_time_sk;
 	ds_key_t	wr_item_sk;

@@ -36,10 +36,11 @@
 /*
  * INCOME_BAND table structure 
  */
-struct W_INCOME_BAND_TBL {
+struct __attribute__((packed)) W_INCOME_BAND_TBL {
 	int	ib_income_band_id;
 	int	ib_lower_bound;
 	int	ib_upper_bound;
+    int padding;
 };
 
 int mk_w_income_band(void *pDest, ds_key_t kIndex);

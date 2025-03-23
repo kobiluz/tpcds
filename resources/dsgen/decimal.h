@@ -44,11 +44,12 @@
  * a precise decimal data type, using scaled integer 
  * arithmetic.
  */
-typedef struct DECIMAL_T {
-	int flags;
+typedef struct __attribute__((packed)) DECIMAL_T {
+    ds_key_t number;
 	int precision;
 	int scale;
-	ds_key_t number;
+    int flags;
+    int padding;
 } decimal_t;
 
 #define FL_INIT		0x0004

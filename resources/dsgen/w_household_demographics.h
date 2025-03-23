@@ -38,7 +38,7 @@
 /*
  * HOUSEHOLD_DEMOGRAPHICS table structure 
  */
-struct W_HOUSEHOLD_DEMOGRAPHICS_TBL {
+struct __attribute__((packed)) W_HOUSEHOLD_DEMOGRAPHICS_TBL {
 	ds_key_t	hd_demo_sk;
 	ds_key_t	hd_income_band_id;
 	char		*hd_buy_potential;

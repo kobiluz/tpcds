@@ -44,30 +44,36 @@
 /*
  * ITEM table structure 
  */
-struct W_ITEM_TBL {
+struct __attribute__((packed)) W_ITEM_TBL {
 	ds_key_t	i_item_sk;
-	char		i_item_id[RS_BKEY + 1];
+	//char		i_item_id[RS_BKEY + 1];
+    char		*i_item_id;
 	ds_key_t	i_rec_start_date_id;
 	ds_key_t	i_rec_end_date_id;
-	char		i_item_desc[RS_I_ITEM_DESC + 1];
-	decimal_t	i_current_price;	/* list price */
-	decimal_t	i_wholesale_cost;
+	//char		i_item_desc[RS_I_ITEM_DESC + 1];
+    char		*i_item_desc;
 	ds_key_t	i_brand_id;
-	char		i_brand[RS_I_BRAND + 1];
+	//char		i_brand[RS_I_BRAND + 1];
+    char		*i_brand;
 	ds_key_t	i_class_id;
 	char		*i_class;
 	ds_key_t	i_category_id;
 	char		*i_category;
 	ds_key_t	i_manufact_id;
-	char		i_manufact[RS_I_MANUFACT + 1];
+	//char		i_manufact[RS_I_MANUFACT + 1];
+    char		*i_manufact;
 	char		*i_size;
-	char		i_formulation[RS_I_FORMULATION + 1];
+	//char		i_formulation[RS_I_FORMULATION + 1];
+    char		*i_formulation;
 	char		*i_color;
 	char		*i_units;
 	char		*i_container;
 	ds_key_t	i_manager_id;
-	char		i_product_name[RS_I_PRODUCT_NAME + 1];
+	//char		i_product_name[RS_I_PRODUCT_NAME + 1];
+    char		*i_product_name;
 	ds_key_t	i_promo_sk;
+    decimal_t	i_current_price;	/* list price */
+    decimal_t	i_wholesale_cost;
 };
 
 

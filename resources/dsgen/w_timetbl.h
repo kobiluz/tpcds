@@ -38,17 +38,18 @@
  */
 #ifndef W_TIME_TBL_H
 #define W_TIME_TBL_H
-struct W_TIME_TBL {
+struct __attribute__((packed)) W_TIME_TBL {
 	ds_key_t	t_time_sk;	
-	char		t_time_id[RS_BKEY + 1];	
-	int			t_time;
-	int			t_hour;
-	int			t_minute;
-	int			t_second;
+	//char		t_time_id[RS_BKEY + 1];
+    char		*t_time_id;
 	char		*t_am_pm;
 	char		*t_shift;
 	char		*t_sub_shift;
 	char		*t_meal_time;
+	int			t_time;
+	int			t_hour;
+	int			t_minute;
+	int			t_second;
 };
 
 int mk_w_time(void *pDest, ds_key_t kIndex);

@@ -47,13 +47,13 @@
 /*
  * CUSTOMER_DEMOGRAPHICS table structure 
  */
-struct W_CUSTOMER_DEMOGRAPHICS_TBL {
+struct __attribute__((packed)) W_CUSTOMER_DEMOGRAPHICS_TBL {
 ds_key_t	cd_demo_sk;
 char		*cd_gender;
 char		*cd_marital_status;
 char		*cd_education_status;
-int			cd_purchase_estimate;
 char		*cd_credit_rating;
+int			cd_purchase_estimate;
 int			cd_dep_count;
 int			cd_dep_employed_count;
 int			cd_dep_college_count;

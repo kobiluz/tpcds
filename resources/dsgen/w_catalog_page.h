@@ -38,16 +38,19 @@
 /*
  * CATALOG_PAGE table structure 
  */
-struct CATALOG_PAGE_TBL {
+struct __attribute__((packed)) CATALOG_PAGE_TBL {
 	ds_key_t	cp_catalog_page_sk;
-	char		cp_catalog_page_id[RS_BKEY + 1];
+	//char		cp_catalog_page_id[RS_BKEY + 1];
+    char		*cp_catalog_page_id;
 	ds_key_t	cp_start_date_id;
 	ds_key_t	cp_end_date_id;
-	char	cp_department[RS_CP_DEPARTMENT + 1];
+	//char	cp_department[RS_CP_DEPARTMENT + 1];
+    char	*cp_department;
+	//char	cp_description[RS_CP_DESCRIPTION + 1];
+    char	*cp_description;
+	char	*cp_type;
 	int		cp_catalog_number;
 	int		cp_catalog_page_number;
-	char	cp_description[RS_CP_DESCRIPTION + 1];
-	char	*cp_type;
 };
 
 int mk_w_catalog_page(void *row, ds_key_t index);
