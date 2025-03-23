@@ -38,78 +38,40 @@
 ################
 ## TARGET OS HERE
 ################
-# OS Values: AIX, LINUX, SOLARIS, NCR, HPUX
 OS	=	LINUX
 ###########
 # No changes should be necessary below this point
 # Each compile variable is adjusted for the target platform using the OS setting above
 ###########
-# CC
-AIX_CC		= xlC
-HPUX_CC		= gcc
 LINUX_CC		= gcc
-NCR_CC		= cc
-SOLARIS_CC	= gcc
-SOL86_CC	= cc
 CC		= $($(OS)_CC)
 # CFLAGS
-AIX_CFLAGS		= -q64 -O3 -D_LARGE_FILES
-HPUX_CFLAGS		= -O3 -Wall
 LINUX_CFLAGS	= -g
-NCR_CFLAGS		= -g
-SOLARIS_CFLAGS	= -O3 -Wall
-SOL86_CFLAGS	= -O3
-BASE_CFLAGS    = -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE #-maix64 -DMEM_TEST
-CFLAGS			= $(BASE_CFLAGS) -D$(OS) $($(OS)_CFLAGS)
-# EXE
-AIX_EXE	=
-HPUX_EXE	=
-LINUX_EXE	=
-NCR_EXE		=
-SOLARIS_EXE	=
-SOL86_EXE	=
-EXE		= $($(OS)_EXE)
+BASE_CFLAGS     = -fPIC -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE #-maix64 -DMEM_TEST
+CFLAGS	        = $(BASE_CFLAGS) -D$(OS) $($(OS)_CFLAGS)
+LDFLAGS         = -L. -ldsdgen
 # LEX
-AIX_LEX		= flex
-HPUX_LEX	= flex
 LINUX_LEX	= lex
-NCR_LEX		= lex
-SOLARIS_LEX	= lex
-SOL86_LEX	= lex
 LEX		= $($(OS)_LEX)
 # LIBS
-AIX_LIBS	= -lm
-HPUX_LIBS	= -lm -ll
 LINUX_LIBS	= -lm
-NCR_LIBS	= -lm -lc89
-SOLARIS_LIBS	= -ly -ll -lm
-SOL86_LIBS	= -ly -ll -lm
 LIBS		= $($(OS)_LIBS)
 # YACC
-AIX_YACC	= yacc
-HPUX_YACC	= bison -y
 LINUX_YACC	= yacc
-NCR_YACC	= yacc
-SOLARIS_YACC	= yacc
-SOL86_YACC	= yacc
 YACC		= $($(OS)_YACC)
 # YFLAGS
-AIX_YFLAGS	= -d -v
-HPUX_YFLAGS	= -y -d -v
 LINUX_YFLAGS	= -d -v
-NCR_YFLAGS	= -d -v
-SOLARIS_YFLAGS	= -d -v
-SOL86_YFLAGS	= -d -v
 YFLAGS		= $($(OS)_YFLAGS)
 ###############
 TREE_ROOT=/tmp/tree
 #
-PROG1 = dsdgen$(EXE)
-PROG2 = dsqgen$(EXE)
-PROG3 = distcomp$(EXE)
-PROG4 = mkheader$(EXE)
-PROG5 = checksum$(EXE)
-PROGS = $(PROG1) $(PROG2) $(PROG3) $(PROG4) $(PROG5)
+LIB1 = libdsdgen.so
+PROG1 = dsdgen
+PROG2 = dsqgen
+PROG3 = distcomp
+PROG4 = mkheader
+PROG5 = checksum
+PROGS = $(LIB1) $(PROG1)
 #
 COMMON_HDR = address.h build_support.h config.h constants.h date.h \
 	dcgram.h dcomp.h dcomp_params.h decimal.h dist.h driver.h \
@@ -130,8 +92,9 @@ W_HDR = w_call_center.h w_catalog_page.h w_catalog_returns.h \
 	dbgen_version.h s_pline.h
 HDR = $(COMMON_HDR) $(DISTCOMP_HDR) $(QGEN_HDR) $(W_HDR)
 #
+DRIVER_SRC = driver.c
 COMMON_SRC = address.c build_support.c date.c \
-	decimal.c dist.c driver.c error_msg.c expr.c genrand.c \
+	decimal.c dist.c error_msg.c expr.c genrand.c \
 	grammar_support.c join.c list.c load.c misc.c \
 	nulls.c parallel.c permute.c pricing.c print.c r_params.c StringBuffer.c \
 	tdef_functions.c tdefs.c text.c scd.c scaling.c release.c scd.c sparse.c \
@@ -146,8 +109,9 @@ W_SRC = w_call_center.c w_catalog_page.c w_catalog_returns.c w_catalog_sales.c \
 	w_promotion.c w_reason.c w_ship_mode.c w_store.c w_store_returns.c \
 	w_store_sales.c w_timetbl.c w_warehouse.c w_web_page.c w_web_returns.c \
 	w_web_sales.c w_web_site.c dbgen_version.c
-SRC = $(COMMON_SRC) $(DISTCOMP_SRC) $(W_SRC) $(QGEN_SRC) mkheader.c checksum.c
+SRC = $(DRIVER_SRC) $(COMMON_SRC) $(DISTCOMP_SRC) $(W_SRC) $(QGEN_SRC) mkheader.c checksum.c
 #
+DRIVER_OBJ = driver.o
 DBGEN_OBJ = address.o build_support.o date.o \
 	decimal.o dist.o driver.o error_msg.o genrand.o \
 	join.o list.o load.o misc.o \
@@ -172,7 +136,7 @@ OBJ2 =	$(QGEN_OBJ)
 OBJ3 =	$(DISTCOMP_OBJ)
 OBJ4 =	mkheader.o
 OBJ5 =	checksum.o
-OBJ = $(OBJ1) $(OBJ2) $(OBJ3) $(OBJ4) $(OBJ5)
+OBJ = $(OBJ1) $(OBJ2) $(OBJ3) $(OBJ4) $(OBJ5) $(DRIVER_OBJ)
 #
 IDX 	=	tpcds.idx
 IDXSRC =	calendar.dst cities.dst english.dst fips.dst names.dst \
@@ -193,22 +157,23 @@ QUERY_SRC = $(FQD) $(VARIANTS)
 TREE_DOC =
 JUNK	= tags *.idx columns.h streams.h y.tab.h y.tab.c tokenizer.c  \
 	y.output .ctags_updated tpcds.idx.h
-DBGENSRC	= $(SRC) $(HDR) $(OTHER) $(DOC) $(DDL) $(IDXSRC) $(WIN_MAKE) $(QUERY_SRC) $(TESTS) $(ANS)
 GENERATED	= tables.h streams.h columns.h
 DATE_STAMP	= `date '+%Y%m%d'`
 #
 all: .ctags_updated $(PROGS) $(IDX)
 
-$(PROG1): $(OBJ1) $(IDX)
-	$(CC) $(CFLAGS) $(LDFLAGS) -o $(PROG1) $(OBJ1) $(LIBS)
+$(LIB1): $(OBJ1) $(IDX)
+	$(CC) $(CFLAGS) -shared -o $(LIB1) $(OBJ1) $(LIBS)
+$(PROG1): $(DRIVER_OBJ) $(LIB1)
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $(PROG1) $(DRIVER_OBJ)
 $(PROG2): $(OBJ2)
-	$(CC) $(CFLAGS) $(LDFLAGS) -o $(PROG2) $(OBJ2) $(LIBS)
+	$(CC) $(CFLAGS) -o $(PROG2) $(OBJ2) $(LIBS)
 $(PROG3): $(OBJ3)
-	$(CC) $(CFLAGS) $(LDFLAGS) -o $(PROG3) $(OBJ3) $(LIBS)
+	$(CC) $(CFLAGS) -o $(PROG3) $(OBJ3) $(LIBS)
 $(PROG4): $(OBJ4)
-	$(CC) $(CFLAGS) $(LDFLAGS) -o $(PROG4) $(OBJ4) $(LIBS)
+	$(CC) $(CFLAGS) -o $(PROG4) $(OBJ4) $(LIBS)
 $(PROG5): $(OBJ5)
-	$(CC) $(CFLAGS) $(LDFLAGS) -o $(PROG5) $(OBJ5) $(LIBS)
+	$(CC) $(CFLAGS) -o $(PROG5) $(OBJ5) $(LIBS)
 $(IDX): $(PROG3) $(IDXSRC)
 	./$(PROG3) -i tpcds.dst -o $(IDX)
 
@@ -217,8 +182,6 @@ clean:
 .ctags_updated: $(SRC)
 	-ctags $(SRC) 2> /dev/null
 	date > .ctags_updated
-current_source:
-	cvs update
 depend: $(SRC) $(HDR)
 	touch columns.h streams.h
 	-makedepend -f Makefile.suite -Y -- $(CFLAGS) -- $(SRC) 2> /dev/null
@@ -227,13 +190,6 @@ depend: $(SRC) $(HDR)
 lint:
 	lint $(CFLAGS) -u -x -wO -p $(SRC1)
 	lint $(CFLAGS) -u -x -wO -p $(SRC2)
-release: current_source depend sum tar zip test_build
-	rm -f tpcds_`date '+%Y%m%d'`.sum
-	rm -rf test
-tar: $(DBGENSRC)
-	tar cvzf tpcds_`date '+%Y%m%d'`.tar.gz $(DBGENSRC) tpcds_`date '+%Y%m%d'`.sum
-zip: $(DBGENSRC)
-	zip tpcds_`date '+%Y%m%d'` $(DBGENSRC) tpcds_`date '+%Y%m%d'`.sum
 data_set: /data/dbgen_version.dat
 	touch data_set
 /data/dbgen_version.dat: $(PROG1)
@@ -261,7 +217,7 @@ expr.o: y.tab.h
 qgen_error.o: error_msg.c
 	$(CC) $(CFLAGS) -DQGEN -c -o qgen_error.o error_msg.c
 qgen:
-	@make qgen2$(EXE)
+	@make qgen2
 join.o: tpcds.idx.h
 driver.o: tpcds.idx.h
 mkheader.o: mkheader.c
