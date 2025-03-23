@@ -58,6 +58,66 @@
 struct W_ITEM_TBL g_w_item,
 	g_OldValues;
 
+static void alloc_strs_if_needed(struct W_ITEM_TBL *r)
+{
+	alloc_str_if_needed(&r->i_item_id, RS_BKEY);
+    alloc_str_if_needed(&r->i_item_desc, RS_I_ITEM_DESC);
+    alloc_str_if_needed(&r->i_brand, RS_I_BRAND);
+    alloc_str_if_needed(&r->i_manufact, RS_I_MANUFACT);
+    alloc_str_if_needed(&r->i_formulation, RS_I_FORMULATION);
+    alloc_str_if_needed(&r->i_product_name, RS_I_PRODUCT_NAME);
+}
+
+static void zero_item(struct W_ITEM_TBL *r)
+{
+    char* i_item_id = r->i_item_id;
+    char* i_item_desc = r->i_item_desc;
+    char* i_brand = r->i_brand;
+    char* i_manufact = r->i_manufact;
+    char* i_formulation = r->i_formulation;
+    char* i_product_name = r->i_product_name;
+
+    memset(r, 0, sizeof(struct W_ITEM_TBL));
+
+    r->i_item_id = i_item_id;
+    memset(r->i_item_id, 0, RS_BKEY + 1);
+    r->i_item_desc = i_item_desc;
+    memset(r->i_item_desc, 0, RS_I_ITEM_DESC + 1);
+    r->i_brand = i_brand;
+    memset(r->i_brand, 0, RS_I_BRAND + 1);
+    r->i_manufact = i_manufact;
+    memset(r->i_manufact, 0, RS_I_MANUFACT + 1);
+    r->i_formulation = i_formulation;
+    memset(r->i_formulation, 0, RS_I_FORMULATION + 1);
+    r->i_product_name = i_product_name;
+    memset(r->i_product_name, 0, RS_I_PRODUCT_NAME + 1);
+}
+
+static void copy_item_to_old(struct W_ITEM_TBL *r)
+{
+    char* i_item_id = g_OldValues.i_item_id;
+    char* i_item_desc = g_OldValues.i_item_desc;
+    char* i_brand = g_OldValues.i_brand;
+    char* i_manufact = g_OldValues.i_manufact;
+    char* i_formulation = g_OldValues.i_formulation;
+    char* i_product_name = g_OldValues.i_product_name;
+
+    memcpy(&g_OldValues, r, sizeof(struct W_ITEM_TBL));
+
+    g_OldValues.i_item_id = i_item_id;
+    memcpy(i_item_id, r->i_item_id, RS_BKEY + 1);
+    g_OldValues.i_item_desc = i_item_desc;
+    memcpy(i_item_desc, r->i_item_desc, RS_I_ITEM_DESC + 1);
+    g_OldValues.i_brand = i_brand;
+    memcpy(i_brand, r->i_brand, RS_I_BRAND + 1);
+    g_OldValues.i_manufact = i_manufact;
+    memcpy(i_manufact, r->i_manufact, RS_I_MANUFACT + 1);
+    g_OldValues.i_formulation = i_formulation;
+    memcpy(i_formulation, r->i_formulation, RS_I_FORMULATION + 1);
+    g_OldValues.i_product_name = i_product_name;
+    memcpy(i_product_name, r->i_product_name, RS_I_PRODUCT_NAME + 1);
+}
+
 /*
 * mk_item
 */
@@ -92,17 +152,17 @@ mk_w_item (void* row, ds_key_t index)
 	else
 		r = row;
 	
-	
+    alloc_strs_if_needed(r);
 	if (!bInit)
 	{
 		/* some fields are static throughout the data set */
 		strtodec(&dMinMarkdown, MIN_ITEM_MARKDOWN_PCT);
 		strtodec(&dMaxMarkdown, MAX_ITEM_MARKDOWN_PCT);
-
+        alloc_strs_if_needed(rOldValues);
 		bInit = 1;
 	}
 	
-	memset(r, 0, sizeof(struct W_ITEM_TBL));
+    zero_item(r);
 
 	/* build the new value */
 	nullSet(&pT->kNullBitMap, I_NULLS);
@@ -146,7 +206,7 @@ mk_w_item (void* row, ds_key_t index)
 	strtodec(&dMinPrice, szMinPrice);
 	strtodec(&dMaxPrice, szMaxPrice);
 	genrand_decimal(&r->i_current_price, DIST_UNIFORM, &dMinPrice, &dMaxPrice, NULL, I_CURRENT_PRICE);
-	changeSCD(SCD_INT, &r->i_current_price, &rOldValues->i_current_price,  &nFieldChangeFlags,  bFirstRecord);
+    changeSCD(SCD_INT, &r->i_current_price.flags, &rOldValues->i_current_price.flags,  &nFieldChangeFlags,  bFirstRecord);
 
 	genrand_decimal(&dMarkdown, DIST_UNIFORM, &dMinMarkdown, &dMaxMarkdown, NULL, I_WHOLESALE_COST);
 	decimal_t_op(&r->i_wholesale_cost, OP_MULT, &r->i_current_price, &dMarkdown);
@@ -213,10 +273,10 @@ mk_w_item (void* row, ds_key_t index)
  * if this is the first of a set of revisions, then baseline the old values
  */
  if (bFirstRecord)
-   memcpy(&g_OldValues, r, sizeof(struct W_ITEM_TBL));
+   copy_item_to_old(r);
 
  if (index == 1)
-   memcpy(&g_OldValues, r, sizeof(struct W_ITEM_TBL));
+   copy_item_to_old(r);
 
 	return (res);
 }

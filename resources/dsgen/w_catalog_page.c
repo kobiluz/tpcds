@@ -51,6 +51,13 @@
 
 struct CATALOG_PAGE_TBL g_w_catalog_page;
 
+static void alloc_strs_if_needed(struct CATALOG_PAGE_TBL *r)
+{
+	alloc_str_if_needed(&r->cp_catalog_page_id, RS_BKEY);
+	alloc_str_if_needed(&r->cp_department, RS_CP_DEPARTMENT);
+	alloc_str_if_needed(&r->cp_description, RS_CP_DESCRIPTION);
+}
+
 /*
 * Routine: mk_catalog_page()
 * Purpose: populate the catalog_page table
@@ -87,7 +94,8 @@ mk_w_catalog_page (void *row, ds_key_t index)
 		r = &g_w_catalog_page;
 	else
 		r = row;
-	
+
+    alloc_strs_if_needed(r);
 	if (!bInit)
 	{
 		nCatalogPageMax = ((int)get_rowcount(CATALOG_PAGE) / CP_CATALOGS_PER_YEAR) / (YEAR_MAXIMUM - YEAR_MINIMUM + 2); 

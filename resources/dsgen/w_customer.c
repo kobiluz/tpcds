@@ -40,6 +40,7 @@
 #include "columns.h"
 #include "w_customer.h"
 #include "genrand.h"
+#include "misc.h"
 #include "build_support.h"
 #include "tables.h"
 #include "print.h"
@@ -48,6 +49,13 @@
 
 struct W_CUSTOMER_TBL g_w_customer;
 /* extern tdef w_tdefs[]; */
+
+static void alloc_strs_if_needed(struct W_CUSTOMER_TBL *r)
+{
+	alloc_str_if_needed(&r->c_customer_id, RS_BKEY);
+	alloc_str_if_needed(&r->c_login, RS_C_LOGIN);
+    alloc_str_if_needed(&r->c_email_address, RS_C_EMAIL);
+}
 
 /*
 * Routine: mk_customer
@@ -88,6 +96,7 @@ mk_w_customer (void * row, ds_key_t index)
 	else
 		r = row;
 
+    alloc_strs_if_needed(r);
 	if (!bInit)
 	{			
         nBaseDate = dttoj (strtodate (DATE_MINIMUM));

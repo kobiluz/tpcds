@@ -50,6 +50,11 @@
 
 struct W_TIME_TBL g_w_time;
 
+static void alloc_strs_if_needed(struct W_TIME_TBL *r)
+{
+	alloc_str_if_needed(&r->t_time_id, RS_BKEY);
+}
+
 /*
 * mk_time
 */
@@ -67,7 +72,7 @@ mk_w_time(void* row, ds_key_t index)
 		r = &g_w_time;
 	else
 		r = row;
-
+    alloc_strs_if_needed(r);
 	
 	nullSet(&pT->kNullBitMap, T_NULLS);
 	r->t_time_sk = index - 1;

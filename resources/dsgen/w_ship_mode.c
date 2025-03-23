@@ -41,12 +41,18 @@
 #include "print.h"
 #include "columns.h"
 #include "build_support.h"
+#include "misc.h"
 #include "tables.h"
 #include "nulls.h"
 #include "tdefs.h"
 
 struct W_SHIP_MODE_TBL g_w_ship_mode;
 
+static void alloc_strs_if_needed(struct W_SHIP_MODE_TBL *r)
+{
+	alloc_str_if_needed(&r->sm_ship_mode_id, RS_BKEY);
+    alloc_str_if_needed(&r->sm_contract, RS_SM_CONTRACT);
+}
 
 /*
 * Routine: 
@@ -80,6 +86,7 @@ mk_w_ship_mode(void *pDest, ds_key_t kIndex)
 		memset(&g_w_ship_mode, 0, sizeof(struct W_SHIP_MODE_TBL));
 		bInit = 1;
 	}
+    alloc_strs_if_needed(r);
 	
 	nullSet(&pTdef->kNullBitMap, SM_NULLS);
 	r->sm_ship_mode_sk = kIndex;

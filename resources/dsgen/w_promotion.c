@@ -48,6 +48,13 @@
 
 struct W_PROMOTION_TBL g_w_promotion;
 
+static void alloc_strs_if_needed(struct W_PROMOTION_TBL *r)
+{
+	alloc_str_if_needed(&r->p_promo_id, RS_BKEY);
+    alloc_str_if_needed(&r->p_promo_name, RS_P_PROMO_NAME);
+    alloc_str_if_needed(&r->p_channel_details, RS_P_CHANNEL_DETAILS);
+}
+
 /*
 * Routine: mk_promotion
 * Purpose: populate the promotion table
@@ -82,9 +89,9 @@ mk_w_promotion(void *pDest, ds_key_t index)
 	else
 		r = pDest;
 
+    alloc_strs_if_needed(r);
 	if (!bInit)
 	{
-		memset(&g_w_promotion, 0, sizeof(struct W_PROMOTION_TBL));
 		bInit = 1;
         start_date = strtodate (DATE_MINIMUM);
 	}

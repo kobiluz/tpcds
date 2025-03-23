@@ -122,3 +122,12 @@ a_rnd (int min, int max, int column, char *dest)
    *(dest + len) = '\0';
    return (len);
 }
+
+void alloc_str_if_needed(char** ppstr, int size)
+{
+	if (*ppstr == NULL) {
+		(*ppstr) = (char *)malloc(size + 1);
+		MALLOC_CHECK(*ppstr);
+		(*ppstr)[0] = 0;
+	}
+}

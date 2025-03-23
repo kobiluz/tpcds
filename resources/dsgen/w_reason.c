@@ -41,11 +41,17 @@
 #include "print.h"
 #include "columns.h"
 #include "build_support.h"
+#include "misc.h"
 #include "tables.h"
 #include "nulls.h"
 #include "tdefs.h"
 
 struct W_REASON_TBL g_w_reason;
+
+static void alloc_strs_if_needed(struct W_REASON_TBL *r)
+{
+	alloc_str_if_needed(&r->r_reason_id, RS_BKEY);
+}
 
 /*
 * mk_reason
@@ -68,6 +74,7 @@ mk_w_reason (void* row, ds_key_t index)
 		memset(&g_w_reason, 0, sizeof(struct W_REASON_TBL));
 		bInit = 1;
 	}
+	alloc_strs_if_needed(r);
 	
 	nullSet(&pTdef->kNullBitMap, R_NULLS);
 	r->r_reason_sk = index;

@@ -49,6 +49,12 @@
 static int s_nCountyCount = 0;
 static int s_nCityCount = 0;
 
+static void alloc_strs_if_needed(ds_addr_t *pAddr)
+{
+	alloc_str_if_needed(&pAddr->suite_num, RS_CC_SUITE_NUM);
+	alloc_str_if_needed(&pAddr->country, RS_CC_COUNTRY);
+}
+
 void
 resetCountCount(void)
 {
@@ -83,7 +89,8 @@ mk_address(ds_addr_t *pAddr, int nColumn)
       nMaxCounties,
 		bInit = 0;
    tdef *pTdef;
-		
+
+    alloc_strs_if_needed(pAddr);
 	if (!bInit)
 	{
       nMaxCities = (int)get_rowcount(ACTIVE_CITIES);

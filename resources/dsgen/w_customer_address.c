@@ -41,6 +41,7 @@
 #include "decimal.h"
 #include "genrand.h"
 #include "columns.h"
+#include "misc.h"
 #include "build_support.h"
 #include "print.h"
 #include "tables.h"
@@ -48,6 +49,11 @@
 #include "tdefs.h"
 
 struct W_CUSTOMER_ADDRESS_TBL g_w_customer_address;
+
+static void alloc_strs_if_needed(struct W_CUSTOMER_ADDRESS_TBL *r)
+{
+	alloc_str_if_needed(&r->ca_addr_id, RS_BKEY);
+}
 
 /*
 * mk_customer_address
@@ -66,7 +72,8 @@ mk_w_customer_address (void* row, ds_key_t index)
 		r = &g_w_customer_address;
 	else
 		r = row;
-	
+
+    alloc_strs_if_needed(r);
 	nullSet(&pTdef->kNullBitMap, CA_NULLS);
 	r->ca_addr_sk = index;
 	mk_bkey(&r->ca_addr_id[0], index, CA_ADDRESS_ID);

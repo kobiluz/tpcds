@@ -45,4 +45,5 @@ int int_op(int *dest, int op, int arg1, int arg2);
 
 char	*env_config (char *var, char *dflt);
 int     a_rnd (int min, int max, int column, char *dest);
+void alloc_str_if_needed(char** ppstr, int size);
 #endif

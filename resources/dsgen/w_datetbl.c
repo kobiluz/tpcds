@@ -40,6 +40,7 @@
 #include "w_datetbl.h"
 #include "print.h"
 #include "columns.h"
+#include "misc.h"
 #include "build_support.h"
 #include "tables.h"
 #include "nulls.h"
@@ -47,6 +48,11 @@
 
 struct W_DATE_TBL g_w_date;
 /* extern tdef w_tdefs[]; */
+
+static void alloc_strs_if_needed(struct W_DATE_TBL *r)
+{
+	alloc_str_if_needed(&r->d_date_id, RS_BKEY);
+}
 
 /*
 * Routine: mk_datetbl
@@ -81,6 +87,7 @@ mk_w_date (void * row, ds_key_t index)
 	else
 		r = row;
 
+    alloc_strs_if_needed(r);
 	if (!bInit)
 	{
 	    r->d_month_seq = 0;

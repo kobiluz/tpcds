@@ -59,6 +59,15 @@
 struct W_STORE_TBL g_w_store;
 static struct W_STORE_TBL g_OldValues;
 
+static void alloc_strs_if_needed(struct W_STORE_TBL *r)
+{
+	alloc_str_if_needed(&r->store_id, RS_BKEY);
+    alloc_str_if_needed(&r->store_name, RS_W_STORE_NAME);
+    alloc_str_if_needed(&r->store_manager, RS_W_STORE_MGR);
+    alloc_str_if_needed(&r->market_desc, RS_W_MARKET_DESC);
+    alloc_str_if_needed(&r->market_manager, RS_W_MARKET_MGR);
+}
+
 /*
 * mk_store
 */
@@ -96,7 +105,7 @@ mk_w_store (void* row, ds_key_t index)
 	else
 		r = row;
 	
-	
+    alloc_strs_if_needed(r);
 if (!bInit)
 	{
         nHierarchyTotal = (int) get_rowcount (DIVISIONS);
@@ -111,6 +120,7 @@ if (!bInit)
 				
 		/* columns that should be dynamic */
 		r->rec_end_date_id = -1;
+        alloc_strs_if_needed(rOldValues);
     }
 	
 	nullSet(&pT->kNullBitMap, W_STORE_NULLS);

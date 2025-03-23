@@ -52,6 +52,12 @@
 
 struct W_WAREHOUSE_TBL g_w_warehouse;
 
+static void alloc_strs_if_needed(struct W_WAREHOUSE_TBL *r)
+{
+	alloc_str_if_needed(&r->w_warehouse_id, RS_BKEY);
+    alloc_str_if_needed(&r->w_warehouse_name, RS_W_WAREHOUSE_NAME);
+}
+
 /*
 * mk_warehouse
 */
@@ -68,7 +74,7 @@ mk_w_warehouse (void* row, ds_key_t index)
 		r = &g_w_warehouse;
 	else
 		r = row;
-	
+    alloc_strs_if_needed(r);
 	
 	nullSet(&pT->kNullBitMap, W_NULLS);
 	r->w_warehouse_sk = index;

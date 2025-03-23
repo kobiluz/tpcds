@@ -59,6 +59,18 @@
 struct W_WEB_SITE_TBL g_w_web_site;
 static struct W_WEB_SITE_TBL g_OldValues;
 
+static void alloc_strs_if_needed(struct W_WEB_SITE_TBL *r)
+{
+	alloc_str_if_needed(&r->web_site_id, RS_BKEY);
+    alloc_str_if_needed(&r->web_name, RS_WEB_NAME);
+    alloc_str_if_needed(&r->web_class, RS_WEB_CLASS);
+    alloc_str_if_needed(&r->web_manager, RS_WEB_MANAGER);
+    alloc_str_if_needed(&r->web_market_class, RS_WEB_MARKET_CLASS);
+    alloc_str_if_needed(&r->web_market_desc, RS_WEB_MARKET_DESC);
+    alloc_str_if_needed(&r->web_market_manager, RS_WEB_MARKET_MANAGER);
+    alloc_str_if_needed(&r->web_company_name, RS_WEB_COMPANY_NAME);
+}
+
 /*
 * Routine: mk_web_site()
 * Purpose: populate the web_site table
@@ -97,6 +109,7 @@ mk_w_web_site (void *row, ds_key_t index)
 	else
 		r = row;
 
+    alloc_strs_if_needed(r);
 	if (!bInit)
 	{
 		/* setup invariant values */
@@ -106,6 +119,7 @@ mk_w_web_site (void *row, ds_key_t index)
 		strtodec(&dMinTaxPercentage, WEB_MIN_TAX_PERCENTAGE);
 		strtodec(&dMaxTaxPercentage, WEB_MAX_TAX_PERCENTAGE);
 
+        alloc_strs_if_needed(rOldValues);
 		bInit = 1;
 	}
 

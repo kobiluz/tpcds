@@ -60,6 +60,13 @@
 struct W_WEB_PAGE_TBL g_w_web_page;
 static struct W_WEB_PAGE_TBL g_OldValues;
 
+static void alloc_strs_if_needed(struct W_WEB_PAGE_TBL *r)
+{
+	alloc_str_if_needed(&r->wp_page_id, RS_BKEY);
+    alloc_str_if_needed(&r->wp_site_id, RS_BKEY);
+    alloc_str_if_needed(&r->wp_url, RS_WP_URL);
+}
+
 /*
 * Routine: mk_web_page()
 * Purpose: populate the web_page table
@@ -100,6 +107,7 @@ mk_w_web_page (void * row, ds_key_t index)
 	else
 		r = row;
 
+    alloc_strs_if_needed(r);
 	if (!bInit)
 	{
 		/* setup invariant values */
@@ -110,6 +118,7 @@ mk_w_web_page (void * row, ds_key_t index)
 		nConcurrent = (int)get_rowcount(CONCURRENT_WEB_SITES);
 		nRevisions = (int)get_rowcount(WEB_PAGE) / nConcurrent;
 
+        alloc_strs_if_needed(rOldValues);
 		bInit = 1;
 	}
 

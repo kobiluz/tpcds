@@ -65,6 +65,18 @@
 struct CALL_CENTER_TBL g_w_call_center;
 static struct CALL_CENTER_TBL g_OldValues;
 
+static void alloc_strs_if_needed(struct CALL_CENTER_TBL *r)
+{
+	alloc_str_if_needed(&r->cc_call_center_id, RS_BKEY);
+	alloc_str_if_needed(&r->cc_name, RS_CC_NAME);
+	alloc_str_if_needed(&r->cc_manager, RS_CC_MANAGER);
+	alloc_str_if_needed(&r->cc_market_class, RS_CC_MARKET_CLASS);
+	alloc_str_if_needed(&r->cc_market_desc, RS_CC_MARKET_DESC);
+	alloc_str_if_needed(&r->cc_market_manager, RS_CC_MARKET_MANAGER);
+	alloc_str_if_needed(&r->cc_division_name, RS_CC_DIVISION_NAME);
+	alloc_str_if_needed(&r->cc_company_name, RS_CC_COMPANY_NAME);
+}
+
 /*
 * Routine: mk_w_call_center()
 * Purpose: 
@@ -109,6 +121,7 @@ mk_w_call_center (void* row, ds_key_t index)
 	else
 		r = row;
 
+	alloc_strs_if_needed(r);
 	if (!bInit)
 	{
         /* begin locals allocation/initialization */
@@ -127,6 +140,8 @@ mk_w_call_center (void* row, ds_key_t index)
 
 		strtodec(&dMinTaxPercentage, MIN_CC_TAX_PERCENTAGE);
 		strtodec(&dMaxTaxPercentage, MAX_CC_TAX_PERCENTAGE);
+
+		alloc_strs_if_needed(rOldValues);
       bInit = 1;
 	}
 	
