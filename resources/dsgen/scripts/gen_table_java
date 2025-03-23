@@ -1,0 +1,11 @@
+#!/bin/sh
+
+scale=$2
+results=$1
+table=$3
+
+mkdir -p $results/sf$scale/$table
+cd ../../../target
+java --enable-native-access=ALL-UNNAMED -jar tpcds-1.5-SNAPSHOT-jar-with-dependencies.jar --scale $scale --directory $results/sf$scale/$table --table $table
+cd - > /dev/null
+echo "sf$scale/$table completed"

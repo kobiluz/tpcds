@@ -1,0 +1,9 @@
+#!/bin/bash
+
+dir1=$1
+dir2=$2
+table=$3
+
+echo "$table sales/returns"
+diff $dir1/${table}_sales/${table}_returns.dat $dir2/${table}_sales/${table}_returns.dat | wc -l
+diff $dir1/${table}_sales/${table}_sales.dat $dir2/${table}_sales/${table}_sales.dat | wc -l
