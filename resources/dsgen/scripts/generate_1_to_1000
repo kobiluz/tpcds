@@ -1,0 +1,7 @@
+#!/bin/sh
+
+results=$1
+
+time ./gen_catalog $results 1 
+time ./gen_catalog $results 10
+#time ./gen_catalog $results 100

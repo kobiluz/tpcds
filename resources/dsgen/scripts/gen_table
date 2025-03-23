@@ -1,0 +1,11 @@
+#!/bin/sh
+
+scale=$2
+results=$1
+table=$3
+
+mkdir -p $results/sf$scale/$table
+cd ../../../src/main/resources/dsgen
+cp tpcds.idx $results/sf$scale/$table/
+export LD_LIBRARY_PATH=. ; ./dsdgen -scale $scale -dir $results/sf$scale/$table -table $table
+echo "sf$scale/$table completed"

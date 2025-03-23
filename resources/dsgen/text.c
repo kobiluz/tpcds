@@ -1,38 +1,38 @@
-/* 
- * Legal Notice 
- * 
- * This document and associated source code (the "Work") is a part of a 
- * benchmark specification maintained by the TPC. 
- * 
- * The TPC reserves all right, title, and interest to the Work as provided 
- * under U.S. and international laws, including without limitation all patent 
- * and trademark rights therein. 
- * 
- * No Warranty 
- * 
- * 1.1 TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, THE INFORMATION 
- *     CONTAINED HEREIN IS PROVIDED "AS IS" AND WITH ALL FAULTS, AND THE 
- *     AUTHORS AND DEVELOPERS OF THE WORK HEREBY DISCLAIM ALL OTHER 
- *     WARRANTIES AND CONDITIONS, EITHER EXPRESS, IMPLIED OR STATUTORY, 
- *     INCLUDING, BUT NOT LIMITED TO, ANY (IF ANY) IMPLIED WARRANTIES, 
- *     DUTIES OR CONDITIONS OF MERCHANTABILITY, OF FITNESS FOR A PARTICULAR 
- *     PURPOSE, OF ACCURACY OR COMPLETENESS OF RESPONSES, OF RESULTS, OF 
- *     WORKMANLIKE EFFORT, OF LACK OF VIRUSES, AND OF LACK OF NEGLIGENCE. 
- *     ALSO, THERE IS NO WARRANTY OR CONDITION OF TITLE, QUIET ENJOYMENT, 
- *     QUIET POSSESSION, CORRESPONDENCE TO DESCRIPTION OR NON-INFRINGEMENT 
- *     WITH REGARD TO THE WORK. 
- * 1.2 IN NO EVENT WILL ANY AUTHOR OR DEVELOPER OF THE WORK BE LIABLE TO 
- *     ANY OTHER PARTY FOR ANY DAMAGES, INCLUDING BUT NOT LIMITED TO THE 
- *     COST OF PROCURING SUBSTITUTE GOODS OR SERVICES, LOST PROFITS, LOSS 
- *     OF USE, LOSS OF DATA, OR ANY INCIDENTAL, CONSEQUENTIAL, DIRECT, 
+/*
+ * Legal Notice
+ *
+ * This document and associated source code (the "Work") is a part of a
+ * benchmark specification maintained by the TPC.
+ *
+ * The TPC reserves all right, title, and interest to the Work as provided
+ * under U.S. and international laws, including without limitation all patent
+ * and trademark rights therein.
+ *
+ * No Warranty
+ *
+ * 1.1 TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, THE INFORMATION
+ *     CONTAINED HEREIN IS PROVIDED "AS IS" AND WITH ALL FAULTS, AND THE
+ *     AUTHORS AND DEVELOPERS OF THE WORK HEREBY DISCLAIM ALL OTHER
+ *     WARRANTIES AND CONDITIONS, EITHER EXPRESS, IMPLIED OR STATUTORY,
+ *     INCLUDING, BUT NOT LIMITED TO, ANY (IF ANY) IMPLIED WARRANTIES,
+ *     DUTIES OR CONDITIONS OF MERCHANTABILITY, OF FITNESS FOR A PARTICULAR
+ *     PURPOSE, OF ACCURACY OR COMPLETENESS OF RESPONSES, OF RESULTS, OF
+ *     WORKMANLIKE EFFORT, OF LACK OF VIRUSES, AND OF LACK OF NEGLIGENCE.
+ *     ALSO, THERE IS NO WARRANTY OR CONDITION OF TITLE, QUIET ENJOYMENT,
+ *     QUIET POSSESSION, CORRESPONDENCE TO DESCRIPTION OR NON-INFRINGEMENT
+ *     WITH REGARD TO THE WORK.
+ * 1.2 IN NO EVENT WILL ANY AUTHOR OR DEVELOPER OF THE WORK BE LIABLE TO
+ *     ANY OTHER PARTY FOR ANY DAMAGES, INCLUDING BUT NOT LIMITED TO THE
+ *     COST OF PROCURING SUBSTITUTE GOODS OR SERVICES, LOST PROFITS, LOSS
+ *     OF USE, LOSS OF DATA, OR ANY INCIDENTAL, CONSEQUENTIAL, DIRECT,
  *     INDIRECT, OR SPECIAL DAMAGES WHETHER UNDER CONTRACT, TORT, WARRANTY,
- *     OR OTHERWISE, ARISING IN ANY WAY OUT OF THIS OR ANY OTHER AGREEMENT 
- *     RELATING TO THE WORK, WHETHER OR NOT SUCH AUTHOR OR DEVELOPER HAD 
- *     ADVANCE NOTICE OF THE POSSIBILITY OF SUCH DAMAGES. 
- * 
+ *     OR OTHERWISE, ARISING IN ANY WAY OUT OF THIS OR ANY OTHER AGREEMENT
+ *     RELATING TO THE WORK, WHETHER OR NOT SUCH AUTHOR OR DEVELOPER HAD
+ *     ADVANCE NOTICE OF THE POSSIBILITY OF SUCH DAMAGES.
+ *
  * Contributors:
  * Gradient Systems
- */ 
+ */
 #include "config.h"
 #include "porting.h"
 #include <stdio.h>
@@ -51,22 +51,23 @@
  *
  * Params:
  * Returns:
- * Called By: 
- * Calls: 
+ * Called By:
+ * Calls:
  * Assumptions:
  * Side Effects:
  * TODO: None
  */
-static int used_space = 0; /* current length of the sentence being built */
-#define SPACE_INCREMENT	100
+#define USED_SPACE          100
+#define ALLOCATED_SPACE     101
+#define VERBIAGE            102
+#define SPACE_INCREMENT     100
+static long text_status[200];
 
 static char *
 mk_sentence(int stream)
 {
-	static char *verbiage = NULL;
-	static int allocated_space = 0;
 	int word_len;
-	char *syntax, 
+	char *syntax,
 		*cp,
 		*word = NULL,
 		temp[2];
@@ -111,28 +112,27 @@ mk_sentence(int stream)
 			word_len = 1;
 		else
 			word_len = strlen(word);
-		
-		if (used_space + word_len >= allocated_space)
+
+		if (text_status[USED_SPACE] + word_len >= text_status[ALLOCATED_SPACE])
 			{
-			verbiage = (char *)realloc(verbiage, allocated_space + SPACE_INCREMENT);
-			MALLOC_CHECK(verbiage);
-			allocated_space += SPACE_INCREMENT;
+            if (text_status[ALLOCATED_SPACE] == 0) {
+                text_status[VERBIAGE] = (long)malloc(SPACE_INCREMENT);
+            } else {
+                text_status[VERBIAGE] = (long)realloc((char*)text_status[VERBIAGE], text_status[ALLOCATED_SPACE] + SPACE_INCREMENT);
+            }
+			MALLOC_CHECK((void*)text_status[VERBIAGE]);
+			text_status[ALLOCATED_SPACE] += SPACE_INCREMENT;
 			}
-		
 		if (word == NULL)
-			strcpy(&verbiage[used_space], temp);
+			strcpy(&(((char*)(text_status[VERBIAGE]))[text_status[USED_SPACE]]), temp);
 		else
-			strcpy(&verbiage[used_space], word);
-		used_space += word_len;
+			strcpy(&(((char*)(text_status[VERBIAGE]))[text_status[USED_SPACE]]), word);
+		text_status[USED_SPACE] += word_len;
 		word = NULL;
 	}
 
-	return(verbiage);
+	return(char*)text_status[VERBIAGE];
 }
-
-	
-
-
 
 
 /*
@@ -144,8 +144,8 @@ mk_sentence(int stream)
  *
  * Params:
  * Returns:
- * Called By: 
- * Calls: 
+ * Called By:
+ * Calls:
  * Assumptions:
  * Side Effects:
  * TODO: None
@@ -158,7 +158,7 @@ gen_text(char *dest, int min, int max, int stream)
 		capitalize = 1;
 	char *s;
 
-	used_space = 0;
+	text_status[USED_SPACE] = 0;
 	genrand_integer(&target_len, DIST_UNIFORM, min, max, 0, stream);
 	if (dest)
 		*dest = '\0';
@@ -168,10 +168,9 @@ gen_text(char *dest, int min, int max, int stream)
 		MALLOC_CHECK(dest);
 	}
 
-
 	while (target_len > 0)
 		{
-		used_space = 0;
+		text_status[USED_SPACE] = 0;
 		s = mk_sentence(stream);
 		if (capitalize)
 			*s = toupper(*s);
@@ -187,7 +186,7 @@ gen_text(char *dest, int min, int max, int stream)
 			target_len -= 1;
 			}
 		}
-	
+
 	return(dest);
 }
 
@@ -203,7 +202,7 @@ typedef struct {char *name;} tdef;
 option_t options[] =
 {
 
-{"DISTRIBUTIONS", OPT_STR, 0, NULL, NULL, "tester_dist.idx"}, 
+{"DISTRIBUTIONS", OPT_STR, 0, NULL, NULL, "tester_dist.idx"},
 NULL
 };
 

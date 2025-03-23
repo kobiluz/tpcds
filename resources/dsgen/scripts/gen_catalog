@@ -1,0 +1,30 @@
+#!/bin/sh
+
+scale=$2
+results=$1
+
+rm -rf $results/sf$scale
+./gen_table $results $scale call_center &
+./gen_table $results $scale catalog_page &
+./gen_table $results $scale catalog_sales &
+./gen_table $results $scale customer &
+./gen_table $results $scale customer_address &
+./gen_table $results $scale customer_demographics &
+./gen_table $results $scale date_dim &
+./gen_table $results $scale household_demographics &
+./gen_table $results $scale income_band &
+./gen_table $results $scale inventory &
+./gen_table $results $scale item &
+./gen_table $results $scale promotion &
+./gen_table $results $scale reason &
+./gen_table $results $scale ship_mode &
+./gen_table $results $scale store &
+./gen_table $results $scale store_sales &
+./gen_table $results $scale time_dim &
+./gen_table $results $scale warehouse &
+./gen_table $results $scale web_page &
+./gen_table $results $scale web_sales &
+./gen_table $results $scale web_site &
+
+echo "$(jobs)"
+wait $(jobs)

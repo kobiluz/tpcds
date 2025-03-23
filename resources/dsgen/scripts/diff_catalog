@@ -1,0 +1,27 @@
+#!/bin/bash
+
+scale=$3
+dir1=$1/sf$3
+dir2=$2/sf$3
+
+./diff_table $dir1 $dir2 call_center
+./diff_table $dir1 $dir2 catalog_page
+./diff_sales_returns $dir1 $dir2 catalog
+./diff_table $dir1 $dir2 customer
+./diff_table $dir1 $dir2 customer_address
+./diff_table $dir1 $dir2 customer_demographics
+./diff_table $dir1 $dir2 date_dim
+./diff_table $dir1 $dir2 household_demographics
+./diff_table $dir1 $dir2 income_band
+./diff_table $dir1 $dir2 inventory
+./diff_table $dir1 $dir2 item
+./diff_table $dir1 $dir2 promotion
+./diff_table $dir1 $dir2 reason
+./diff_table $dir1 $dir2 ship_mode
+./diff_table $dir1 $dir2 store
+./diff_sales_returns $dir1 $dir2 store
+./diff_table $dir1 $dir2 time_dim
+./diff_table $dir1 $dir2 warehouse
+./diff_table $dir1 $dir2 web_page
+./diff_sales_returns $dir1 $dir2 web
+./diff_table $dir1 $dir2 web_site
