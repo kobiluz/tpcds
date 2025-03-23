@@ -264,7 +264,8 @@ get_rowcount(int table)
 	tdef *pTdef;
 	
 	if (!bScaleSet)
-	{		
+	{
+		init_rand();
 		nScale = get_int("SCALE");
 		if (nScale > 100000)
 			ReportErrorNoLine(QERR_BAD_SCALE, NULL, 1);
