@@ -383,7 +383,7 @@ changeSCD(int nDataType, void *pNewData, void *pOldData, int *nFlags, int bFirst
          *(ds_key_t *)pNewData = *(ds_key_t *)pOldData;
          break;
      case SCD_CHAR:
-         strcpy((char *)pNewData, (char *)pOldData);
+         strcpy(*((char**)pNewData), *((char**)pOldData));
          break;
       case SCD_DEC:
          memcpy(pNewData, pOldData, sizeof(decimal_t));
@@ -407,7 +407,7 @@ changeSCD(int nDataType, void *pNewData, void *pOldData, int *nFlags, int bFirst
          *(ds_key_t *)pOldData = *(ds_key_t *)pNewData;
          break;
       case SCD_CHAR:
-         strcpy((char *)pOldData, (char *)pNewData);
+         strcpy(*((char**)pOldData), *((char**)pNewData));
          break;
       case SCD_DEC:
          memcpy(pOldData, pNewData, sizeof(decimal_t));
