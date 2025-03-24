@@ -27,14 +27,13 @@ public final class SlowlyChangingDimensionUtils
 
     private SlowlyChangingDimensionUtils() {}
 
-    public static SlowlyChangingDimensionKey computeScdKey(Table table, long rowNumber)
+    public static SlowlyChangingDimensionKey computeScdKey(int tableNumber, long rowNumber)
     {
         int modulo = (int) rowNumber % 6;
         long startDate;
         long endDate;
         boolean isNewKey = false;
         String businessKey;
-        int tableNumber = table.ordinal();
         switch (modulo) {
             case 1: // 1 revision
                 businessKey = makeBusinessKey(rowNumber);

@@ -64,7 +64,7 @@ public class WebPageRowGenerator
         long nullBitMap = createNullBitMap(WEB_PAGE, getRandomNumberStream(WP_NULLS));
         long wpPageSk = rowNumber;
 
-        SlowlyChangingDimensionKey slowlyChangingDimensionKey = computeScdKey(WEB_PAGE, rowNumber);
+        SlowlyChangingDimensionKey slowlyChangingDimensionKey = computeScdKey(WEB_PAGE.ordinal(), rowNumber);
         String wpPageId = slowlyChangingDimensionKey.getBusinessKey();
         long wpRecStartDateId = slowlyChangingDimensionKey.getStartDate();
         long wpRecStartEndDateId = slowlyChangingDimensionKey.getEndDate();

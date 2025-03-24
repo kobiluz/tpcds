@@ -24,13 +24,10 @@ import static io.trino.tpcds.Table.CATALOG_SALES;
 import static io.trino.tpcds.Table.INVENTORY;
 import static io.trino.tpcds.Table.ITEM;
 import static io.trino.tpcds.Table.STORE_SALES;
-import static io.trino.tpcds.Table.S_INVENTORY;
 import static io.trino.tpcds.Table.WAREHOUSE;
 import static io.trino.tpcds.Table.WEB_SALES;
 import static io.trino.tpcds.distribution.CalendarDistribution.Weights.SALES;
 import static io.trino.tpcds.distribution.CalendarDistribution.Weights.SALES_LEAP_YEAR;
-import static io.trino.tpcds.distribution.CalendarDistribution.Weights.UNIFORM;
-import static io.trino.tpcds.distribution.CalendarDistribution.Weights.UNIFORM_LEAP_YEAR;
 import static io.trino.tpcds.distribution.CalendarDistribution.getIndexForDate;
 import static io.trino.tpcds.distribution.CalendarDistribution.getMaxWeight;
 import static io.trino.tpcds.distribution.CalendarDistribution.getWeightForDayNumber;
@@ -65,10 +62,6 @@ public class Scaling
     {
         if (table == INVENTORY) {
             return scaleInventory();
-        }
-
-        if (table == S_INVENTORY) {
-            return getIdCount(ITEM) * getRowCount(WAREHOUSE) * 6;
         }
         return tableToRowCountMap.get(table);
     }
@@ -122,16 +115,6 @@ public class Scaling
             case WEB_SALES:
                 rowCount = getRowCount(table);
                 break;
-            case S_CATALOG_ORDER:
-                rowCount = getRowCount(CATALOG_SALES);
-                break;
-            case S_PURCHASE:
-                rowCount = getRowCount(STORE_SALES);
-                break;
-            case S_WEB_ORDER:
-                rowCount = getRowCount(WEB_SALES);
-                break;
-            case S_INVENTORY:
             case INVENTORY:
                 rowCount = getRowCount(WAREHOUSE) * getIdCount(ITEM);
                 break;
@@ -142,17 +125,9 @@ public class Scaling
         Date date = fromJulianDays((int) julianDate);
         CalendarDistribution.Weights weights;
         if (table != INVENTORY) {
-            if (table == S_INVENTORY) {
-                weights = UNIFORM;
-                if (isLeapYear(date.getYear())) {
-                    weights = UNIFORM_LEAP_YEAR;
-                }
-            }
-            else {
-                weights = SALES;
-                if (isLeapYear(date.getYear())) {
-                    weights = SALES_LEAP_YEAR;
-                }
+            weights = SALES;
+            if (isLeapYear(date.getYear())) {
+                weights = SALES_LEAP_YEAR;
             }
 
             int calendarTotal = getMaxWeight(weights) * 5; // assumes date range is 5 years

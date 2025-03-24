@@ -90,7 +90,7 @@ public class CallCenterRowGenerator
         // The id combined with start and end dates represent the unique key for this row.
         // The id is what would be a primary key if there were only one version of each row
         // the start and end dates are the version information for the row.
-        SlowlyChangingDimensionKey slowlyChangingDimensionKey = computeScdKey(CALL_CENTER, rowNumber);
+        SlowlyChangingDimensionKey slowlyChangingDimensionKey = computeScdKey(CALL_CENTER.ordinal(), rowNumber);
         builder.setCcCallCenterId(slowlyChangingDimensionKey.getBusinessKey());
         builder.setCcRecStartDateId(slowlyChangingDimensionKey.getStartDate());
         builder.setCcRecEndDateId(slowlyChangingDimensionKey.getEndDate());
