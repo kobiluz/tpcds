@@ -1,0 +1,130 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package io.trino.tpcds.column.generator;
+
+import io.trino.tpcds.Table;
+import io.trino.tpcds.column.Column;
+import io.trino.tpcds.column.ColumnType;
+
+import static io.trino.tpcds.Table.STORE_RETURNS;
+import static io.trino.tpcds.column.ColumnTypes.DECIMAL;
+import static io.trino.tpcds.column.ColumnTypes.DECIMAL_LAYOUT;
+import static io.trino.tpcds.column.ColumnTypes.IDENTIFIER;
+import static io.trino.tpcds.column.ColumnTypes.INTEGER;
+
+public enum StoreReturnsNativeGeneratorColumn
+        implements Column
+{
+    SR_RETURNED_DATE_SK(IDENTIFIER),
+    SR_RETURNED_TIME_SK(IDENTIFIER),
+    SR_ITEM_SK(IDENTIFIER),
+    SR_CUSTOMER_SK(IDENTIFIER),
+    SR_CDEMO_SK(IDENTIFIER),
+    SR_HDEMO_SK(IDENTIFIER),
+    SR_ADDR_SK(IDENTIFIER),
+    SR_STORE_SK(IDENTIFIER),
+    SR_REASON_SK(IDENTIFIER),
+    SR_TICKET_NUMBER(IDENTIFIER),
+    SR_PADDING_DECIMAL1(DECIMAL_LAYOUT),
+    SR_PADDING_DECIMAL2(DECIMAL_LAYOUT),
+    SR_PADDING_DECIMAL3(DECIMAL_LAYOUT),
+    SR_PADDING_DECIMAL4(DECIMAL_LAYOUT),
+    SR_PADDING_DECIMAL5(DECIMAL_LAYOUT),
+    SR_PADDING_DECIMAL6(DECIMAL_LAYOUT),
+    SR_PADDING_DECIMAL7(DECIMAL_LAYOUT),
+    SR_PADDING_DECIMAL8(DECIMAL_LAYOUT),
+    SR_PADDING_DECIMAL9(DECIMAL_LAYOUT),
+    SR_PADDING_DECIMAL10(DECIMAL_LAYOUT),
+    SR_PADDING_DECIMAL11(DECIMAL_LAYOUT),
+    SR_PADDING_DECIMAL12(DECIMAL_LAYOUT),
+    SR_PADDING_DECIMAL13(DECIMAL_LAYOUT),
+    SR_PRICING_NET_PAID_NUMBER(DECIMAL),
+    SR_PRICING_NET_PAID_PRECISION(INTEGER),
+    SR_PRICING_NET_PAID_SCALE(INTEGER),
+    SR_PRICING_NET_PAID_FLAGS(INTEGER),
+    SR_PADDING_INT1(INTEGER),
+    SR_PRICING_NET_PAID_INC_TAX_NUMBER(DECIMAL),
+    SR_PRICING_NET_PAID_INC_TAX_PRECISION(INTEGER),
+    SR_PRICING_NET_PAID_INC_TAX_SCALE(INTEGER),
+    SR_PRICING_NET_PAID_INC_TAX_FLAGS(INTEGER),
+    SR_PADDING_INT2(INTEGER),
+    SR_PRICING_EXT_TAX_NUMBER(DECIMAL),
+    SR_PRICING_EXT_TAX_PRECISION(INTEGER),
+    SR_PRICING_EXT_TAX_SCALE(INTEGER),
+    SR_PRICING_EXT_TAX_FLAGS(INTEGER),
+    SR_PADDING_INT3(INTEGER),
+    SR_PRICING_EXT_SHIP_COST_NUMBER(DECIMAL),
+    SR_PRICING_EXT_SHIP_COST_PRECISION(INTEGER),
+    SR_PRICING_EXT_SHIP_COST_SCALE(INTEGER),
+    SR_PRICING_EXT_SHIP_COST_FLAGS(INTEGER),
+    SR_PADDING_INT4(INTEGER),
+    SR_PRICING_QUANTITY(INTEGER),
+    SR_VALID(INTEGER),
+    SR_PRICING_REFUNDED_CASH_NUMBER(DECIMAL),
+    SR_PRICING_REFUNDED_CASH_PRECISION(INTEGER),
+    SR_PRICING_REFUNDED_CASH_SCALE(INTEGER),
+    SR_PRICING_REFUNDED_CASH_FLAGS(INTEGER),
+    SR_PADDING_INT5(INTEGER),
+    SR_PRICING_REVERSED_CHARGE_NUMBER(DECIMAL),
+    SR_PRICING_REVERSED_CHARGE_PRECISION(INTEGER),
+    SR_PRICING_REVERSED_CHARGE_SCALE(INTEGER),
+    SR_PRICING_REVERSED_CHARGE_FLAGS(INTEGER),
+    SR_PADDING_INT6(INTEGER),
+    SR_PRICING_STORE_CREDIT_NUMBER(DECIMAL),
+    SR_PRICING_STORE_CREDIT_PRECISION(INTEGER),
+    SR_PRICING_STORE_CREDIT_SCALE(INTEGER),
+    SR_PRICING_STORE_CREDIT_FLAGS(INTEGER),
+    SR_PADDING_INT7(INTEGER),
+    SR_PRICING_FEE_NUMBER(DECIMAL),
+    SR_PRICING_FEE_PRECISION(INTEGER),
+    SR_PRICING_FEE_SCALE(INTEGER),
+    SR_PRICING_FEE_FLAGS(INTEGER),
+    SR_PADDING_INT8(INTEGER),
+    SR_PRICING_NET_LOSS_NUMBER(DECIMAL),
+    SR_PRICING_NET_LOSS_PRECISION(INTEGER),
+    SR_PRICING_NET_LOSS_SCALE(INTEGER),
+    SR_PRICING_NET_LOSS_FLAGS(INTEGER),
+    SR_PADDING_INT9(INTEGER);
+
+    private final ColumnType type;
+
+    StoreReturnsNativeGeneratorColumn(ColumnType type)
+    {
+        this.type = type;
+    }
+
+    @Override
+    public Table getTable()
+    {
+        return STORE_RETURNS;
+    }
+
+    @Override
+    public String getName()
+    {
+        return name().toLowerCase();
+    }
+
+    @Override
+    public ColumnType getType()
+    {
+        return type;
+    }
+
+    @Override
+    public int getPosition()
+    {
+        return ordinal();
+    }
+}

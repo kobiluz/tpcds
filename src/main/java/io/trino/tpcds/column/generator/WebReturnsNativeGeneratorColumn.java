@@ -1,0 +1,133 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package io.trino.tpcds.column.generator;
+
+import io.trino.tpcds.Table;
+import io.trino.tpcds.column.Column;
+import io.trino.tpcds.column.ColumnType;
+
+import static io.trino.tpcds.column.ColumnTypes.DECIMAL;
+import static io.trino.tpcds.column.ColumnTypes.DECIMAL_LAYOUT;
+import static io.trino.tpcds.column.ColumnTypes.IDENTIFIER;
+import static io.trino.tpcds.column.ColumnTypes.INTEGER;
+
+public enum WebReturnsNativeGeneratorColumn
+        implements Column
+{
+    WR_RETURNED_DATE_SK(IDENTIFIER),
+    WR_RETURNED_TIME_SK(IDENTIFIER),
+    WR_ITEM_SK(IDENTIFIER),
+    WR_REFUNDED_CUSTOMER_SK(IDENTIFIER),
+    WR_REFUNDED_CDEMO_SK(IDENTIFIER),
+    WR_REFUNDED_HDEMO_SK(IDENTIFIER),
+    WR_REFUNDED_ADDR_SK(IDENTIFIER),
+    WR_RETURNING_CUSTOMER_SK(IDENTIFIER),
+    WR_RETURNING_CDEMO_SK(IDENTIFIER),
+    WR_RETURNING_HDEMO_SK(IDENTIFIER),
+    WR_RETURNING_ADDR_SK(IDENTIFIER),
+    WR_WEB_PAGE_SK(IDENTIFIER),
+    WR_REASON_SK(IDENTIFIER),
+    WR_ORDER_NUMBER(IDENTIFIER),
+    WR_PADDING_DECIMAL1(DECIMAL_LAYOUT),
+    WR_PADDING_DECIMAL2(DECIMAL_LAYOUT),
+    WR_PADDING_DECIMAL3(DECIMAL_LAYOUT),
+    WR_PADDING_DECIMAL4(DECIMAL_LAYOUT),
+    WR_PADDING_DECIMAL5(DECIMAL_LAYOUT),
+    WR_PADDING_DECIMAL6(DECIMAL_LAYOUT),
+    WR_PADDING_DECIMAL7(DECIMAL_LAYOUT),
+    WR_PADDING_DECIMAL8(DECIMAL_LAYOUT),
+    WR_PADDING_DECIMAL9(DECIMAL_LAYOUT),
+    WR_PADDING_DECIMAL10(DECIMAL_LAYOUT),
+    WR_PADDING_DECIMAL11(DECIMAL_LAYOUT),
+    WR_PADDING_DECIMAL12(DECIMAL_LAYOUT),
+    WR_PADDING_DECIMAL13(DECIMAL_LAYOUT),
+    WR_PRICING_NET_PAID_NUMBER(DECIMAL),
+    WR_PRICING_NET_PAID_PRECISION(INTEGER),
+    WR_PRICING_NET_PAID_SCALE(INTEGER),
+    WR_PRICING_NET_PAID_FLAGS(INTEGER),
+    WR_PADDING_INT1(INTEGER),
+    WR_PRICING_NET_PAID_INC_TAX_NUMBER(DECIMAL),
+    WR_PRICING_NET_PAID_INC_TAX_PRECISION(INTEGER),
+    WR_PRICING_NET_PAID_INC_TAX_SCALE(INTEGER),
+    WR_PRICING_NET_PAID_INC_TAX_FLAGS(INTEGER),
+    WR_PADDING_INT2(INTEGER),
+    WR_PRICING_EXT_TAX_NUMBER(DECIMAL),
+    WR_PRICING_EXT_TAX_PRECISION(INTEGER),
+    WR_PRICING_EXT_TAX_SCALE(INTEGER),
+    WR_PRICING_EXT_TAX_FLAGS(INTEGER),
+    WR_PADDING_INT3(INTEGER),
+    WR_PRICING_EXT_SHIP_COST_NUMBER(DECIMAL),
+    WR_PRICING_EXT_SHIP_COST_PRECISION(INTEGER),
+    WR_PRICING_EXT_SHIP_COST_SCALE(INTEGER),
+    WR_PRICING_EXT_SHIP_COST_FLAGS(INTEGER),
+    WR_PADDING_INT4(INTEGER),
+    WR_PRICING_QUANTITY(INTEGER),
+    WR_VALID(INTEGER),
+    WR_PRICING_REFUNDED_CASH_NUMBER(DECIMAL),
+    WR_PRICING_REFUNDED_CASH_PRECISION(INTEGER),
+    WR_PRICING_REFUNDED_CASH_SCALE(INTEGER),
+    WR_PRICING_REFUNDED_CASH_FLAGS(INTEGER),
+    WR_PADDING_INT5(INTEGER),
+    WR_PRICING_REVERSED_CHARGE_NUMBER(DECIMAL),
+    WR_PRICING_REVERSED_CHARGE_PRECISION(INTEGER),
+    WR_PRICING_REVERSED_CHARGE_SCALE(INTEGER),
+    WR_PRICING_REVERSED_CHARGE_FLAGS(INTEGER),
+    WR_PADDING_INT6(INTEGER),
+    WR_PRICING_STORE_CREDIT_NUMBER(DECIMAL),
+    WR_PRICING_STORE_CREDIT_PRECISION(INTEGER),
+    WR_PRICING_STORE_CREDIT_SCALE(INTEGER),
+    WR_PRICING_STORE_CREDIT_FLAGS(INTEGER),
+    WR_PADDING_INT7(INTEGER),
+    WR_PRICING_FEE_NUMBER(DECIMAL),
+    WR_PRICING_FEE_PRECISION(INTEGER),
+    WR_PRICING_FEE_SCALE(INTEGER),
+    WR_PRICING_FEE_FLAGS(INTEGER),
+    WR_PADDING_INT8(INTEGER),
+    WR_PRICING_NET_LOSS_NUMBER(DECIMAL),
+    WR_PRICING_NET_LOSS_PRECISION(INTEGER),
+    WR_PRICING_NET_LOSS_SCALE(INTEGER),
+    WR_PRICING_NET_LOSS_FLAGS(INTEGER),
+    WR_PADDING_INT9(INTEGER);
+
+    private final ColumnType type;
+
+    WebReturnsNativeGeneratorColumn(ColumnType type)
+    {
+        this.type = type;
+    }
+
+    @Override
+    public Table getTable()
+    {
+        return Table.WEB_RETURNS;
+    }
+
+    @Override
+    public String getName()
+    {
+        return name().toLowerCase();
+    }
+
+    @Override
+    public ColumnType getType()
+    {
+        return type;
+    }
+
+    @Override
+    public int getPosition()
+    {
+        return ordinal();
+    }
+}

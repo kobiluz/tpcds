@@ -24,6 +24,8 @@ public class ColumnTypes
     public static final ColumnType IDENTIFIER = new ColumnType(ColumnType.Base.IDENTIFIER);
     public static final ColumnType DATE = new ColumnType(ColumnType.Base.DATE);
     public static final ColumnType TIME = new ColumnType(ColumnType.Base.TIME);
+    public static final ColumnType DECIMAL = new ColumnType(ColumnType.Base.DECIMAL, 5, 2);
+    public static final ColumnType DECIMAL_LAYOUT = new ColumnType(ColumnType.Base.DECIMAL_LAYOUT);
 
     public static ColumnType varchar(int precision)
     {

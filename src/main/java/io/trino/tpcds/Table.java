@@ -42,6 +42,30 @@ import io.trino.tpcds.column.WebPageColumn;
 import io.trino.tpcds.column.WebReturnsColumn;
 import io.trino.tpcds.column.WebSalesColumn;
 import io.trino.tpcds.column.WebSiteColumn;
+import io.trino.tpcds.column.generator.CallCenterNativeGeneratorColumn;
+import io.trino.tpcds.column.generator.CatalogPageNativeGeneratorColumn;
+import io.trino.tpcds.column.generator.CatalogReturnsNativeGeneratorColumn;
+import io.trino.tpcds.column.generator.CatalogSalesNativeGeneratorColumn;
+import io.trino.tpcds.column.generator.CustomerAddressNativeGeneratorColumn;
+import io.trino.tpcds.column.generator.CustomerDemographicsNativeGeneratorColumn;
+import io.trino.tpcds.column.generator.CustomerNativeGeneratorColumn;
+import io.trino.tpcds.column.generator.DateDimNativeGeneratorColumn;
+import io.trino.tpcds.column.generator.HouseholdDemographicsNativeGeneratorColumn;
+import io.trino.tpcds.column.generator.IncomeBandNativeGeneratorColumn;
+import io.trino.tpcds.column.generator.InventoryNativeGeneratorColumn;
+import io.trino.tpcds.column.generator.ItemNativeGeneratorColumn;
+import io.trino.tpcds.column.generator.PromotionNativeGeneratorColumn;
+import io.trino.tpcds.column.generator.ReasonNativeGeneratorColumn;
+import io.trino.tpcds.column.generator.ShipModeNativeGeneratorColumn;
+import io.trino.tpcds.column.generator.StoreNativeGeneratorColumn;
+import io.trino.tpcds.column.generator.StoreReturnsNativeGeneratorColumn;
+import io.trino.tpcds.column.generator.StoreSalesNativeGeneratorColumn;
+import io.trino.tpcds.column.generator.TimeDimNativeGeneratorColumn;
+import io.trino.tpcds.column.generator.WarehouseNativeGeneratorColumn;
+import io.trino.tpcds.column.generator.WebPageNativeGeneratorColumn;
+import io.trino.tpcds.column.generator.WebReturnsNativeGeneratorColumn;
+import io.trino.tpcds.column.generator.WebSalesNativeGeneratorColumn;
+import io.trino.tpcds.column.generator.WebSiteNativeGeneratorColumn;
 import io.trino.tpcds.generator.CallCenterGeneratorColumn;
 import io.trino.tpcds.generator.CatalogPageGeneratorColumn;
 import io.trino.tpcds.generator.CatalogReturnsGeneratorColumn;
@@ -69,31 +93,55 @@ import io.trino.tpcds.generator.WebReturnsGeneratorColumn;
 import io.trino.tpcds.generator.WebSalesGeneratorColumn;
 import io.trino.tpcds.generator.WebSiteGeneratorColumn;
 import io.trino.tpcds.row.generator.CallCenterRowGenerator;
+import io.trino.tpcds.row.generator.CallCenterRowNativeGenerator;
 import io.trino.tpcds.row.generator.CatalogPageRowGenerator;
+import io.trino.tpcds.row.generator.CatalogPageRowNativeGenerator;
 import io.trino.tpcds.row.generator.CatalogReturnsRowGenerator;
+import io.trino.tpcds.row.generator.CatalogReturnsRowNativeGenerator;
 import io.trino.tpcds.row.generator.CatalogSalesRowGenerator;
+import io.trino.tpcds.row.generator.CatalogSalesRowNativeGenerator;
 import io.trino.tpcds.row.generator.CustomerAddressRowGenerator;
+import io.trino.tpcds.row.generator.CustomerAddressRowNativeGenerator;
 import io.trino.tpcds.row.generator.CustomerDemographicsRowGenerator;
+import io.trino.tpcds.row.generator.CustomerDemographicsRowNativeGenerator;
 import io.trino.tpcds.row.generator.CustomerRowGenerator;
+import io.trino.tpcds.row.generator.CustomerRowNativeGenerator;
 import io.trino.tpcds.row.generator.DateDimRowGenerator;
+import io.trino.tpcds.row.generator.DateDimRowNativeGenerator;
 import io.trino.tpcds.row.generator.DbgenVersionRowGenerator;
 import io.trino.tpcds.row.generator.HouseholdDemographicsRowGenerator;
+import io.trino.tpcds.row.generator.HouseholdDemographicsRowNativeGenerator;
 import io.trino.tpcds.row.generator.IncomeBandRowGenerator;
+import io.trino.tpcds.row.generator.IncomeBandRowNativeGenerator;
 import io.trino.tpcds.row.generator.InventoryRowGenerator;
+import io.trino.tpcds.row.generator.InventoryRowNativeGenerator;
 import io.trino.tpcds.row.generator.ItemRowGenerator;
+import io.trino.tpcds.row.generator.ItemRowNativeGenerator;
 import io.trino.tpcds.row.generator.PromotionRowGenerator;
+import io.trino.tpcds.row.generator.PromotionRowNativeGenerator;
 import io.trino.tpcds.row.generator.ReasonRowGenerator;
+import io.trino.tpcds.row.generator.ReasonRowNativeGenerator;
 import io.trino.tpcds.row.generator.RowGenerator;
 import io.trino.tpcds.row.generator.ShipModeRowGenerator;
+import io.trino.tpcds.row.generator.ShipModeRowNativeGenerator;
 import io.trino.tpcds.row.generator.StoreReturnsRowGenerator;
+import io.trino.tpcds.row.generator.StoreReturnsRowNativeGenerator;
 import io.trino.tpcds.row.generator.StoreRowGenerator;
+import io.trino.tpcds.row.generator.StoreRowNativeGenerator;
 import io.trino.tpcds.row.generator.StoreSalesRowGenerator;
+import io.trino.tpcds.row.generator.StoreSalesRowNativeGenerator;
 import io.trino.tpcds.row.generator.TimeDimRowGenerator;
+import io.trino.tpcds.row.generator.TimeDimRowNativeGenerator;
 import io.trino.tpcds.row.generator.WarehouseRowGenerator;
+import io.trino.tpcds.row.generator.WarehouseRowNativeGenerator;
 import io.trino.tpcds.row.generator.WebPageRowGenerator;
+import io.trino.tpcds.row.generator.WebPageRowNativeGenerator;
 import io.trino.tpcds.row.generator.WebReturnsRowGenerator;
+import io.trino.tpcds.row.generator.WebReturnsRowNativeGenerator;
 import io.trino.tpcds.row.generator.WebSalesRowGenerator;
+import io.trino.tpcds.row.generator.WebSalesRowNativeGenerator;
 import io.trino.tpcds.row.generator.WebSiteRowGenerator;
+import io.trino.tpcds.row.generator.WebSiteRowNativeGenerator;
 
 import java.util.Arrays;
 import java.util.List;
@@ -107,170 +155,170 @@ public enum Table
     CALL_CENTER(new TableFlagsBuilder().setIsSmall().setKeepsHistory().build(),
             100,
             0xB,
-            CallCenterRowGenerator.class,
+            TableGenerator.isNativeGenerator() ? CallCenterRowNativeGenerator.class : CallCenterRowGenerator.class,
             CallCenterGeneratorColumn.values(),
-            CallCenterColumn.values(),
+            TableGenerator.isNativeGenerator() ? CallCenterNativeGeneratorColumn.values() : CallCenterColumn.values(),
             new ScalingInfo(0, new int[] {0, 3, 12, 15, 18, 21, 24, 27, 30, 30})),
     CATALOG_PAGE(new TableFlagsBuilder().build(),
             200,
             0x3,
-            CatalogPageRowGenerator.class,
+            TableGenerator.isNativeGenerator() ? CatalogPageRowNativeGenerator.class : CatalogPageRowGenerator.class,
             CatalogPageGeneratorColumn.values(),
-            CatalogPageColumn.values(),
+            TableGenerator.isNativeGenerator() ? CatalogPageNativeGeneratorColumn.values() : CatalogPageColumn.values(),
             new ScalingInfo(0, new int[] {0, 11718, 12000, 20400, 26000, 30000, 36000, 40000, 46000, 50000})),
     CATALOG_RETURNS(new TableFlagsBuilder().build(),
             400,
             0x10007,
-            CatalogReturnsRowGenerator.class,
+            TableGenerator.isNativeGenerator() ? CatalogReturnsRowNativeGenerator.class : CatalogReturnsRowGenerator.class,
             CatalogReturnsGeneratorColumn.values(),
-            CatalogReturnsColumn.values(),
+            TableGenerator.isNativeGenerator() ? CatalogReturnsNativeGeneratorColumn.values() : CatalogReturnsColumn.values(),
             new ScalingInfo(4, new int[] {0, 16, 160, 1600, 4800, 16000, 48000, 160000, 480000, 1600000})),
     CATALOG_SALES(new TableFlagsBuilder().setIsDateBased().build(),
             100,
             0x28000,
-            CatalogSalesRowGenerator.class,
+            TableGenerator.isNativeGenerator() ? CatalogSalesRowNativeGenerator.class : CatalogSalesRowGenerator.class,
             CatalogSalesGeneratorColumn.values(),
-            CatalogSalesColumn.values(),
+            TableGenerator.isNativeGenerator() ? CatalogSalesNativeGeneratorColumn.values() : CatalogSalesColumn.values(),
             new ScalingInfo(4, new int[] {0, 16, 160, 1600, 4800, 16000, 48000, 160000, 480000, 1600000})),
     CUSTOMER(new TableFlagsBuilder().build(),
             700,
             0x13,
-            CustomerRowGenerator.class,
+            TableGenerator.isNativeGenerator() ? CustomerRowNativeGenerator.class : CustomerRowGenerator.class,
             CustomerGeneratorColumn.values(),
-            CustomerColumn.values(),
+            TableGenerator.isNativeGenerator() ? CustomerNativeGeneratorColumn.values() : CustomerColumn.values(),
             new ScalingInfo(3, new int[] {0, 100, 500, 2000, 5000, 12000, 30000, 65000, 80000, 100000})),
     CUSTOMER_ADDRESS(new TableFlagsBuilder().build(),
             600,
             0x3,
-            CustomerAddressRowGenerator.class,
+            TableGenerator.isNativeGenerator() ? CustomerAddressRowNativeGenerator.class : CustomerAddressRowGenerator.class,
             CustomerAddressGeneratorColumn.values(),
-            CustomerAddressColumn.values(),
+            TableGenerator.isNativeGenerator() ? CustomerAddressNativeGeneratorColumn.values() : CustomerAddressColumn.values(),
             new ScalingInfo(3, new int[] {0, 50, 250, 1000, 2500, 6000, 15000, 32500, 40000, 50000})),
     CUSTOMER_DEMOGRAPHICS(new TableFlagsBuilder().build(),
             0,
             0x1,
-            CustomerDemographicsRowGenerator.class,
+            TableGenerator.isNativeGenerator() ? CustomerDemographicsRowNativeGenerator.class : CustomerDemographicsRowGenerator.class,
             CustomerDemographicsGeneratorColumn.values(),
-            CustomerDemographicsColumn.values(),
+            TableGenerator.isNativeGenerator() ? CustomerDemographicsNativeGeneratorColumn.values() : CustomerDemographicsColumn.values(),
             new ScalingInfo(2, new int[] {0, 19208, 19208, 19208, 19208, 19208, 19208, 19208, 19208, 19208})),
     DATE_DIM(new TableFlagsBuilder().build(),
             0,
             0x03,
-            DateDimRowGenerator.class,
+            TableGenerator.isNativeGenerator() ? DateDimRowNativeGenerator.class : DateDimRowGenerator.class,
             DateDimGeneratorColumn.values(),
-            DateDimColumn.values(),
+            TableGenerator.isNativeGenerator() ? DateDimNativeGeneratorColumn.values() : DateDimColumn.values(),
             new ScalingInfo(0, new int[] {0, 73049, 73049, 73049, 73049, 73049, 73049, 73049, 73049, 73049})),
     HOUSEHOLD_DEMOGRAPHICS(new TableFlagsBuilder().build(),
             0,
             0x01,
-            HouseholdDemographicsRowGenerator.class,
+            TableGenerator.isNativeGenerator() ? HouseholdDemographicsRowNativeGenerator.class : HouseholdDemographicsRowGenerator.class,
             HouseholdDemographicsGeneratorColumn.values(),
-            HouseholdDemographicsColumn.values(),
+            TableGenerator.isNativeGenerator() ? HouseholdDemographicsNativeGeneratorColumn.values() : HouseholdDemographicsColumn.values(),
             new ScalingInfo(0, new int[] {0, 7200, 7200, 7200, 7200, 7200, 7200, 7200, 7200, 7200})),
     INCOME_BAND(new TableFlagsBuilder().build(),
             0,
             0x1,
-            IncomeBandRowGenerator.class,
+            TableGenerator.isNativeGenerator() ? IncomeBandRowNativeGenerator.class : IncomeBandRowGenerator.class,
             IncomeBandGeneratorColumn.values(),
-            IncomeBandColumn.values(),
+            TableGenerator.isNativeGenerator() ? IncomeBandNativeGeneratorColumn.values() : IncomeBandColumn.values(),
             new ScalingInfo(0, new int[] {0, 20, 20, 20, 20, 20, 20, 20, 20, 20})),
     INVENTORY(new TableFlagsBuilder().setIsDateBased().build(),
             1000,
             0x07,
-            InventoryRowGenerator.class,
+            TableGenerator.isNativeGenerator() ? InventoryRowNativeGenerator.class : InventoryRowGenerator.class,
             InventoryGeneratorColumn.values(),
-            InventoryColumn.values(),
+            TableGenerator.isNativeGenerator() ? InventoryNativeGeneratorColumn.values() : InventoryColumn.values(),
             new ScalingInfo(0, new int[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0})), // the inventory table is scaled based on item and warehouse
     ITEM(new TableFlagsBuilder().setKeepsHistory().build(),
             50,
             0x0B,
-            ItemRowGenerator.class,
+            TableGenerator.isNativeGenerator() ? ItemRowNativeGenerator.class : ItemRowGenerator.class,
             ItemGeneratorColumn.values(),
-            ItemColumn.values(),
+            TableGenerator.isNativeGenerator() ? ItemNativeGeneratorColumn.values() : ItemColumn.values(),
             new ScalingInfo(3, new int[] {0, 9, 51, 102, 132, 150, 180, 201, 231, 251})),
     PROMOTION(new TableFlagsBuilder().build(),
             200,
             0x3,
-            PromotionRowGenerator.class,
+            TableGenerator.isNativeGenerator() ? PromotionRowNativeGenerator.class : PromotionRowGenerator.class,
             PromotionGeneratorColumn.values(),
-            PromotionColumn.values(),
+            TableGenerator.isNativeGenerator() ? PromotionNativeGeneratorColumn.values() : PromotionColumn.values(),
             new ScalingInfo(0, new int[] {0, 300, 500, 1000, 1300, 1500, 1800, 2000, 2300, 2500})),
     REASON(new TableFlagsBuilder().build(),
             0,
             0x03,
-            ReasonRowGenerator.class,
+            TableGenerator.isNativeGenerator() ? ReasonRowNativeGenerator.class : ReasonRowGenerator.class,
             ReasonGeneratorColumn.values(),
-            ReasonColumn.values(),
+            TableGenerator.isNativeGenerator() ? ReasonNativeGeneratorColumn.values() : ReasonColumn.values(),
             new ScalingInfo(0, new int[] {0, 35, 45, 55, 60, 65, 67, 70, 72, 75})),
     SHIP_MODE(new TableFlagsBuilder().build(),
             0,
             0x03,
-            ShipModeRowGenerator.class,
+            TableGenerator.isNativeGenerator() ? ShipModeRowNativeGenerator.class : ShipModeRowGenerator.class,
             ShipModeGeneratorColumn.values(),
-            ShipModeColumn.values(),
+            TableGenerator.isNativeGenerator() ? ShipModeNativeGeneratorColumn.values() : ShipModeColumn.values(),
             new ScalingInfo(0, new int[] {0, 20, 20, 20, 20, 20, 20, 20, 20, 20})),
     STORE(new TableFlagsBuilder().setKeepsHistory().setIsSmall().build(),
             100,
             0xB,
-            StoreRowGenerator.class,
+            TableGenerator.isNativeGenerator() ? StoreRowNativeGenerator.class : StoreRowGenerator.class,
             StoreGeneratorColumn.values(),
-            StoreColumn.values(),
+            TableGenerator.isNativeGenerator() ? StoreNativeGeneratorColumn.values() : StoreColumn.values(),
             new ScalingInfo(0, new int[] {0, 6, 51, 201, 402, 501, 675, 750, 852, 951})),
     STORE_RETURNS(new TableFlagsBuilder().build(),
             700,
             0x204,
-            StoreReturnsRowGenerator.class,
+            TableGenerator.isNativeGenerator() ? StoreReturnsRowNativeGenerator.class : StoreReturnsRowGenerator.class,
             StoreReturnsGeneratorColumn.values(),
-            StoreReturnsColumn.values(),
+            TableGenerator.isNativeGenerator() ? StoreReturnsNativeGeneratorColumn.values() : StoreReturnsColumn.values(),
             new ScalingInfo(4, new int[] {0, 24, 240, 2400, 7200, 24000, 72000, 240000, 720000, 2400000})),
     STORE_SALES(new TableFlagsBuilder().setIsDateBased().build(),
             900,
             0x204,
-            StoreSalesRowGenerator.class,
+            TableGenerator.isNativeGenerator() ? StoreSalesRowNativeGenerator.class : StoreSalesRowGenerator.class,
             StoreSalesGeneratorColumn.values(),
-            StoreSalesColumn.values(),
+            TableGenerator.isNativeGenerator() ? StoreSalesNativeGeneratorColumn.values() : StoreSalesColumn.values(),
             new ScalingInfo(4, new int[] {0, 24, 240, 2400, 7200, 24000, 72000, 240000, 720000, 2400000})),
     TIME_DIM(new TableFlagsBuilder().build(),
             0,
             0x03,
-            TimeDimRowGenerator.class,
+            TableGenerator.isNativeGenerator() ? TimeDimRowNativeGenerator.class : TimeDimRowGenerator.class,
             TimeDimGeneratorColumn.values(),
-            TimeDimColumn.values(),
+            TableGenerator.isNativeGenerator() ? TimeDimNativeGeneratorColumn.values() : TimeDimColumn.values(),
             new ScalingInfo(0, new int[] {0, 86400, 86400, 86400, 86400, 86400, 86400, 86400, 86400, 86400})),
     WAREHOUSE(new TableFlagsBuilder().setIsSmall().build(),
             200,
             0x03,
-            WarehouseRowGenerator.class,
+            TableGenerator.isNativeGenerator() ? WarehouseRowNativeGenerator.class : WarehouseRowGenerator.class,
             WarehouseGeneratorColumn.values(),
-            WarehouseColumn.values(),
+            TableGenerator.isNativeGenerator() ? WarehouseNativeGeneratorColumn.values() : WarehouseColumn.values(),
             new ScalingInfo(0, new int[] {0, 5, 10, 15, 17, 20, 22, 25, 27, 30})),
     WEB_PAGE(new TableFlagsBuilder().setKeepsHistory().build(),
             250,
             0x0B,
-            WebPageRowGenerator.class,
+            TableGenerator.isNativeGenerator() ? WebPageRowNativeGenerator.class : WebPageRowGenerator.class,
             WebPageGeneratorColumn.values(),
-            WebPageColumn.values(),
+            TableGenerator.isNativeGenerator() ? WebPageNativeGeneratorColumn.values() : WebPageColumn.values(),
             new ScalingInfo(0, new int[] {0, 30, 100, 1020, 1302, 1500, 1800, 2001, 2301, 2502})),
     WEB_RETURNS(new TableFlagsBuilder().build(),
             900,
             0x2004,
-            WebReturnsRowGenerator.class,
+            TableGenerator.isNativeGenerator() ? WebReturnsRowNativeGenerator.class : WebReturnsRowGenerator.class,
             WebReturnsGeneratorColumn.values(),
-            WebReturnsColumn.values(),
+            TableGenerator.isNativeGenerator() ? WebReturnsNativeGeneratorColumn.values() : WebReturnsColumn.values(),
             new ScalingInfo(3, new int[] {0, 60, 600, 6000, 18000, 60000, 180000, 600000, 1800000, 6000000})),
     WEB_SALES(new TableFlagsBuilder().setIsDateBased().build(),
             5,
             0x20008,
-            WebSalesRowGenerator.class,
+            TableGenerator.isNativeGenerator() ? WebSalesRowNativeGenerator.class : WebSalesRowGenerator.class,
             WebSalesGeneratorColumn.values(),
-            WebSalesColumn.values(),
+            TableGenerator.isNativeGenerator() ? WebSalesNativeGeneratorColumn.values() : WebSalesColumn.values(),
             new ScalingInfo(3, new int[] {0, 60, 600, 6000, 18000, 60000, 180000, 600000, 1800000, 6000000})),
     WEB_SITE(new TableFlagsBuilder().setKeepsHistory().setIsSmall().build(),
             100,
             0x0B,
-            WebSiteRowGenerator.class,
+            TableGenerator.isNativeGenerator() ? WebSiteRowNativeGenerator.class : WebSiteRowGenerator.class,
             WebSiteGeneratorColumn.values(),
-            WebSiteColumn.values(),
+            TableGenerator.isNativeGenerator() ? WebSiteNativeGeneratorColumn.values() : WebSiteColumn.values(),
             new ScalingInfo(0, new int[] {0, 15, 21, 12, 21, 27, 33, 39, 42, 48})),
     DBGEN_VERSION(new TableFlagsBuilder().build(),
             0,

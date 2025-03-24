@@ -17,19 +17,155 @@ package io.trino.tpcds;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.lang.foreign.Arena;
+import java.lang.foreign.FunctionDescriptor;
+import java.lang.foreign.Linker;
+import java.lang.foreign.SymbolLookup;
+import java.lang.invoke.MethodHandle;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static io.trino.tpcds.Results.constructResults;
 import static java.lang.String.format;
+import static java.lang.foreign.ValueLayout.ADDRESS;
+import static java.lang.foreign.ValueLayout.JAVA_INT;
+import static java.lang.foreign.ValueLayout.JAVA_LONG;
 import static java.util.Objects.requireNonNull;
 
 public class TableGenerator
 {
+    private static final String NATIVE_GENERATOR_NAME = "dsgen";
+    private static final String NATIVE_GENERATOR_LIBRARY = "libdsdgen.so";
+    private static final String NATIVE_GENERATOR_DIST = "tpcds.idx";
+    private static final String PATH_SEP = "/";
+    private static SymbolLookup nativeGeneratorLookup;
+    private static boolean nativeGenerator;
+    private static boolean nativeGeneratorLoaded;
+    private static MethodHandle getRowCountMethod;
+    private static MethodHandle setScaleMethod;
+
     private final Session session;
+
+    public static void loadNativeGenerator()
+    {
+        String libraryFullPath = PATH_SEP + NATIVE_GENERATOR_NAME + PATH_SEP + NATIVE_GENERATOR_LIBRARY;
+        try {
+            if (!verifyOsAndArch()) {
+                return;
+            }
+            URL urlLibrary = TableGenerator.class.getResource(libraryFullPath);
+            if (urlLibrary == null) {
+                System.err.println("Library not found " + libraryFullPath);
+                return;
+            }
+            nativeGeneratorLookup = SymbolLookup.libraryLookup(copyLibrary(urlLibrary), Arena.ofAuto());
+            getRowCountMethod = Linker.nativeLinker().downcallHandle(nativeGeneratorLookup.find("get_rowcount").orElseThrow(), FunctionDescriptor.of(JAVA_LONG, JAVA_INT));
+            setScaleMethod = Linker.nativeLinker().downcallHandle(nativeGeneratorLookup.find("setScale").orElseThrow(), FunctionDescriptor.ofVoid(JAVA_INT));
+        }
+        catch (Throwable t) {
+            System.err.println("failed to load native generator");
+            return;
+        }
+        finally {
+            nativeGeneratorLoaded = true;
+        }
+        nativeGenerator = true;
+        System.out.println("==== Native Generator was succesfully loaded ====");
+    }
+
+    private static boolean verifyOsAndArch()
+    {
+        String os = System.getProperty("os.name");
+        String arch = System.getProperty("os.arch");
+        boolean success = os.equals("Linux") && arch.equals("aarch64");
+        if (!success) {
+            System.err.println("native generator is not supported for OS " + os + " Arch " + arch);
+        }
+        return success;
+    }
+
+    private static Path copyLibrary(URL urlLibrary)
+    {
+        try {
+            File fileLibrary = File.createTempFile(NATIVE_GENERATOR_NAME, null, new File(System.getProperty("java.io.tmpdir")));
+            fileLibrary.deleteOnExit();
+            try (InputStream in = urlLibrary.openStream()) {
+                Files.copy(in, fileLibrary.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            }
+            return fileLibrary.toPath();
+        }
+        catch (IOException e) {
+            throw new RuntimeException("Failed to create and copy temporary file " + e.getMessage(), e);
+        }
+    }
+
+    public static void setParams(double scale, String directory)
+    {
+        if (!isNativeGenerator()) {
+            return;
+        }
+
+        try {
+            // copy distribution file to results directory
+            String distFullPath = PATH_SEP + NATIVE_GENERATOR_NAME + PATH_SEP + NATIVE_GENERATOR_DIST;
+            URL urlDist = TableGenerator.class.getResource(distFullPath);
+            if (urlDist == null) {
+                throw new RuntimeException("Distributions file not found " + distFullPath);
+            }
+            File workDir = new File(directory);
+            File fileDist = new File(workDir + PATH_SEP + NATIVE_GENERATOR_DIST);
+            fileDist.deleteOnExit();
+            try (InputStream in = urlDist.openStream()) {
+                Files.copy(in, fileDist.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            }
+
+            // set scale
+            int scaleInt = (int) Math.round(scale);
+            setScaleMethod.invokeExact(scaleInt);
+        }
+        catch (Throwable t) {
+            throw new RuntimeException("set scale and directory failed " + t);
+        }
+    }
+
+    // 0 means there is no native value
+    public static int getNativeRowCount(int tableNumber)
+    {
+        try {
+            long rowCount = (long) getRowCountMethod.invokeExact(tableNumber);
+            return (int) rowCount;
+        }
+        catch (Throwable t) {
+            System.err.println("get row count failed");
+            return 0;
+        }
+    }
+
+    public static boolean isNativeGenerator()
+    {
+        if (!nativeGeneratorLoaded) {
+            loadNativeGenerator();
+        }
+        return nativeGenerator;
+    }
+
+    public static MethodHandle nativeMakeRowMethod(String makeRowMethodName)
+    {
+        return Linker.nativeLinker().downcallHandle(nativeGeneratorLookup.find(makeRowMethodName).orElseThrow(), FunctionDescriptor.of(JAVA_INT, ADDRESS, JAVA_LONG));
+    }
+
+    public static MethodHandle nativeEndRowMethod()
+    {
+        return Linker.nativeLinker().downcallHandle(nativeGeneratorLookup.find("row_stop").orElseThrow(), FunctionDescriptor.of(JAVA_INT, JAVA_INT));
+    }
 
     public TableGenerator(Session session)
     {

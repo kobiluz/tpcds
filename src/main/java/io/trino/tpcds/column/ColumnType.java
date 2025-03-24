@@ -13,12 +13,16 @@
  */
 package io.trino.tpcds.column;
 
+import java.lang.foreign.MemoryLayout;
 import java.util.Objects;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkState;
 import static io.trino.tpcds.column.ColumnType.Base.DECIMAL;
 import static io.trino.tpcds.column.ColumnType.Base.VARCHAR;
+import static java.lang.foreign.ValueLayout.ADDRESS;
+import static java.lang.foreign.ValueLayout.JAVA_INT;
+import static java.lang.foreign.ValueLayout.JAVA_LONG;
 
 // This class was derived from the TpchColumnType class in the following repo
 // https://github.com/airlift/tpch. The license for that class can be found here
@@ -31,6 +35,7 @@ public class ColumnType
         IDENTIFIER,
         DATE,
         DECIMAL,
+        DECIMAL_LAYOUT,
         VARCHAR,
         CHAR,
         TIME
@@ -45,11 +50,6 @@ public class ColumnType
         if (base == VARCHAR) {
             checkState(precision.isPresent());
         }
-        if (base == DECIMAL) {
-            checkState(precision.isPresent());
-            checkState(scale.isPresent());
-        }
-
         this.base = base;
         this.precision = precision;
         this.scale = scale;
@@ -83,6 +83,21 @@ public class ColumnType
     public Optional<Integer> getScale()
     {
         return scale;
+    }
+
+    public MemoryLayout getLayout()
+    {
+        switch (base) {
+            case INTEGER:
+                return JAVA_INT;
+            case VARCHAR:
+            case CHAR:
+                return ADDRESS;
+            case DECIMAL_LAYOUT:
+                return MemoryLayout.paddingLayout(24);
+            default:
+                return JAVA_LONG;
+        }
     }
 
     @Override

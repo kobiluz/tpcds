@@ -68,6 +68,7 @@ public class Options
     public Session toSession()
     {
         validateProperties();
+        TableGenerator.setParams(scale, directory);
         return new Session(scale,
                 directory,
                 suffix,

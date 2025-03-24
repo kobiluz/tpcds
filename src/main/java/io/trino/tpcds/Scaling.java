@@ -45,14 +45,18 @@ public class Scaling
     {
         this.scale = scale;
 
+        boolean isNativeGenerator = TableGenerator.isNativeGenerator();
         for (Table table : Table.values()) {
             ScalingInfo scalingInfo = table.getScalingInfo();
-            long baseRowCount = scalingInfo.getRowCountForScale(scale);
+            long baseRowCount = isNativeGenerator ? TableGenerator.getNativeRowCount(table.ordinal()) : scalingInfo.getRowCountForScale(scale);
 
             // now adjust for the multiplier
-            int multiplier = table.keepsHistory() ? 2 : 1;
-            for (int i = 1; i <= scalingInfo.getMultiplier(); i++) {
-                multiplier *= 10;
+            int multiplier = 1;
+            if (!isNativeGenerator) {
+                multiplier = table.keepsHistory() ? 2 : 1;
+                for (int i = 1; i <= scalingInfo.getMultiplier(); i++) {
+                    multiplier *= 10;
+                }
             }
             tableToRowCountMap.put(table, baseRowCount * multiplier);
         }
@@ -60,7 +64,7 @@ public class Scaling
 
     public long getRowCount(Table table)
     {
-        if (table == INVENTORY) {
+        if (!TableGenerator.isNativeGenerator() && (table == INVENTORY)) {
             return scaleInventory();
         }
         return tableToRowCountMap.get(table);
