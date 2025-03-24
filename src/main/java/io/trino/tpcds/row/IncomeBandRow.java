@@ -24,11 +24,11 @@ import static io.trino.tpcds.generator.IncomeBandGeneratorColumn.IB_UPPER_BOUND;
 public class IncomeBandRow
         extends TableRowWithNulls
 {
-    private final int ibIncomeBandId;
+    private final long ibIncomeBandId;
     private final int ibLowerBound;
     private final int ibUpperBound;
 
-    public IncomeBandRow(long nullBitMap, int ibIncomeBandId, int ibLowerBound, int ibUpperBound)
+    public IncomeBandRow(long nullBitMap, long ibIncomeBandId, int ibLowerBound, int ibUpperBound)
     {
         super(nullBitMap, IB_INCOME_BAND_ID);
         this.ibIncomeBandId = ibIncomeBandId;
