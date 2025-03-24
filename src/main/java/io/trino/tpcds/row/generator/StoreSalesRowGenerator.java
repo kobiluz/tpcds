@@ -120,7 +120,7 @@ public class StoreSalesRowGenerator
 
         // if the sale gets returned, generate a return row
         int randomInt = generateUniformRandomInt(0, 99, getRandomNumberStream(SR_IS_RETURNED));
-        if (randomInt < SR_RETURN_PCT && (!session.generateOnlyOneTable() || session.getOnlyTableToGenerate() != STORE_SALES)) {
+        if (randomInt < SR_RETURN_PCT && (!session.generateOnlyOneTable() || session.getOnlyTableToGenerate() == STORE_SALES)) {
             generatedRows.add(((StoreReturnsRowGenerator) childRowGenerator).generateRow(session, storeSalesRow));
         }
 
