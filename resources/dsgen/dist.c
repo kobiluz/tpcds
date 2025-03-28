@@ -128,7 +128,7 @@ find_dist(char *name)
 	int i;
    FILE *ifp;
 	int32_t temp;
-	
+	char dist_file_name[200];
 	
 	/* load the index if this is the first time through */
 	if (!index_loaded)
@@ -136,9 +136,9 @@ find_dist(char *name)
 		/* make sure that this is read one thread at a time */
 		if (!index_loaded)	/* make sure no one beat us to it */
 		{
-			
+			snprintf(dist_file_name, 200, "%s/%s", get_str("DIR"), get_str("DISTRIBUTIONS"));
 			/* open the dist file */
-			if ((ifp = fopen(get_str("DISTRIBUTIONS"), "rb")) == NULL)
+			if ((ifp = fopen(dist_file_name, "rb")) == NULL)
 				{
 					fprintf(stderr, "Error: open of distributions failed: ");
 					perror(get_str("DISTRIBUTIONS"));
