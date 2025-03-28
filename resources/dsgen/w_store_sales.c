@@ -75,10 +75,7 @@ mk_master (void *row, ds_key_t index)
 		nMaxItemCount;
 	static ds_key_t kNewDateIndex = 0;
 
-	if (row == NULL)
-		r = &g_w_store_sales;
-	else
-		r = row;
+	r = &g_w_store_sales;
 
 	if (!bInit)
 	{
@@ -115,14 +112,15 @@ static void
 mk_detail (void *row, int bPrint)
 {
 int nTemp;
-struct W_STORE_RETURNS_TBL ReturnRow;
 struct W_STORE_SALES_TBL *r;
+struct W_STORE_RETURNS_TBL *rc;
 tdef *pT = getSimpleTdefsByNumber(STORE_SALES);
 
-	if (row == NULL)
-		r = &g_w_store_sales;
-	else
-		r = row;
+	r = &g_w_store_sales;
+    rc = NULL;
+    if (row != NULL) {
+        bPrint = 0;
+    }
 
    nullSet(&pT->kNullBitMap, SS_NULLS);
 	/* 
@@ -141,14 +139,27 @@ tdef *pT = getSimpleTdefsByNumber(STORE_SALES);
 	genrand_integer(&nTemp, DIST_UNIFORM, 0, 99, 0, SR_IS_RETURNED);
 	if (nTemp < SR_RETURN_PCT)
 	{
-		mk_w_store_returns(&ReturnRow, 1);
+        if (row != NULL) {
+            rc = (struct W_STORE_RETURNS_TBL*)(row + sizeof(struct W_STORE_SALES_TBL));
+        }
+		mk_w_store_returns(rc, 1);
+        if (row != NULL) {
+            rc->sr_pricing.valid = 1;
+        }
       if (bPrint)
-         pr_w_store_returns(&ReturnRow);
+         pr_w_store_returns(rc);
+	} else if (row != NULL) {
+        rc = (struct W_STORE_RETURNS_TBL*)(row + sizeof(struct W_STORE_SALES_TBL));
+        rc->sr_pricing.valid = 0;
 	}
 
    if (bPrint)
       pr_w_store_sales(NULL);
-	
+   if (row != NULL) {
+       r = (struct W_STORE_SALES_TBL*)row;
+       memcpy(r, &g_w_store_sales, sizeof(struct W_STORE_SALES_TBL));
+       r->ss_pricing.valid = 1;
+   }
 	return;
 }
 
@@ -249,7 +260,11 @@ mk_w_store_sales (void *row, ds_key_t index)
 	genrand_integer(&nLineitems, DIST_UNIFORM, 8, 16, 0, SS_TICKET_NUMBER);
    for (i = 1; i <= nLineitems; i++)
    {
-	   mk_detail(NULL, 1);
+	   mk_detail(row, 1);
+       if (row != NULL) {
+           row += (sizeof(struct W_STORE_SALES_TBL) + sizeof(struct W_STORE_RETURNS_TBL));
+           ((struct W_STORE_SALES_TBL*)row)->ss_pricing.valid = 0;
+       }
    }
 
    /**

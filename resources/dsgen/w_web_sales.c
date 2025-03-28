@@ -77,10 +77,7 @@ mk_master (void *row, ds_key_t index)
    static int bInit = 0,
 	   nItemCount;
 	
-	if (row == NULL)
-		r = &g_w_web_sales;
-	else
-		r = row;
+	r = &g_w_web_sales;
 
 	if (!bInit)
 	{
@@ -144,9 +141,9 @@ mk_detail (void *row, int bPrint)
 		nItemCount,
 		bInit = 0;
 	struct W_WEB_SALES_TBL *r;
+    struct W_WEB_RETURNS_TBL* rc;
 	int nShipLag,
 		nTemp;
-   struct W_WEB_RETURNS_TBL w_web_returns;
    tdef *pT = getSimpleTdefsByNumber(WEB_SALES);
 
 
@@ -154,15 +151,14 @@ mk_detail (void *row, int bPrint)
 	{
 		jDate = skipDays(WEB_SALES, &kNewDateIndex);
 		pItemPermutation = makePermutation(NULL, nItemCount = (int)getIDCount(ITEM), WS_PERMUTATION);
-		
 		bInit = 1;
 	}
 
-	if (row == NULL)
-		r = &g_w_web_sales;
-	else
-		r = row;
-
+	r = &g_w_web_sales;
+    rc = NULL;
+    if (row != NULL) {
+        bPrint = 0;
+    }
 	nullSet(&pT->kNullBitMap, WS_NULLS);
 
 
@@ -192,9 +188,18 @@ mk_detail (void *row, int bPrint)
       genrand_integer(&nTemp, DIST_UNIFORM, 0, 99, 0, WR_IS_RETURNED);
       if (nTemp < WR_RETURN_PCT)
       {
-         mk_w_web_returns(&w_web_returns, 1);
+          if (row != NULL) {
+              rc = (struct W_WEB_RETURNS_TBL*)(row + sizeof(struct W_WEB_SALES_TBL));
+          }
+         mk_w_web_returns(rc, 1);
+         if (row != NULL) {
+             rc->wr_pricing.valid = 1;
+         }
          if (bPrint)
-			 pr_w_web_returns(&w_web_returns);
+			 pr_w_web_returns(rc);
+      } else if (row != NULL) {
+        rc = (struct W_WEB_RETURNS_TBL*)(row + sizeof(struct W_WEB_SALES_TBL));
+        rc->wr_pricing.valid = 0;
       }
 
       /**
@@ -202,7 +207,11 @@ mk_detail (void *row, int bPrint)
       */
       if (bPrint)
 		  pr_w_web_sales(NULL);
-
+      if (row != NULL) {
+          r = (struct W_WEB_SALES_TBL*)row;
+          memcpy(r, &g_w_web_sales, sizeof(struct W_WEB_SALES_TBL));
+          r->ws_pricing.valid = 1;
+      }
 	  return;
 }
 
@@ -222,7 +231,11 @@ mk_w_web_sales (void *row, ds_key_t index)
 	genrand_integer(&nLineitems, DIST_UNIFORM, 8, 16, 9, WS_ORDER_NUMBER);
    for (i = 1; i <= nLineitems; i++)
    {
-	   mk_detail(NULL, 1);
+        mk_detail(row, 1);
+        if (row != NULL) {
+            row += (sizeof(struct W_WEB_SALES_TBL) + sizeof(struct W_WEB_RETURNS_TBL));
+            ((struct W_WEB_SALES_TBL*)row)->ws_pricing.valid = 0;
+        }
    }
 
    /**

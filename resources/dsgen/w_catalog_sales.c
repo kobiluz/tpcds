@@ -79,11 +79,7 @@ mk_master (void *row, ds_key_t index)
 	struct W_CATALOG_SALES_TBL *r;
 	static int bInit = 0;
 
-
-	if (row == NULL)
-		r = &g_w_catalog_sales;
-	else
-		r = row;
+	r = &g_w_catalog_sales;
 
 	if (!bInit)
 	{
@@ -166,14 +162,15 @@ mk_detail(void *row, int bPrint)
 	static ds_key_t kNewDateIndex = 0;
 	static ds_key_t jDate;
 	struct W_CATALOG_SALES_TBL *r;
+    struct W_CATALOG_RETURNS_TBL *rc;
 	static int bInit = 0;
    tdef *pTdef = getSimpleTdefsByNumber(CATALOG_SALES);
 
-
-	if (row == NULL)
-		r = &g_w_catalog_sales;
-	else
-		r = row;
+	r = &g_w_catalog_sales;
+    rc = NULL;
+    if (row != NULL) {
+        bPrint = 0;
+    }
 
 	if (!bInit)
 	{
@@ -220,9 +217,18 @@ mk_detail(void *row, int bPrint)
 	genrand_integer(&nTemp, DIST_UNIFORM, 0, 99, 0, CR_IS_RETURNED);
 	if (nTemp < CR_RETURN_PCT)
 	{
-		mk_w_catalog_returns(NULL, 1);
+        if (row != NULL) {
+            rc = (struct W_CATALOG_RETURNS_TBL*)(row + sizeof(struct W_CATALOG_SALES_TBL));
+        }
+		mk_w_catalog_returns(rc, 1);
+        if (row != NULL) {
+            rc->cr_pricing.valid = 1;
+        }
       if (bPrint)
          pr_w_catalog_returns(NULL);
+	} else if (row != NULL) {
+        rc = (struct W_CATALOG_RETURNS_TBL*)(row + sizeof(struct W_CATALOG_SALES_TBL));
+        rc->cr_pricing.valid = 0;
 	}
 
    /**
@@ -230,7 +236,11 @@ mk_detail(void *row, int bPrint)
    */
    if (bPrint)
       pr_w_catalog_sales(NULL);
-
+   if (row != NULL) {
+       r = (struct W_CATALOG_SALES_TBL*)row;
+       memcpy(r, &g_w_catalog_sales, sizeof(struct W_CATALOG_SALES_TBL));
+       r->cs_pricing.valid = 1;
+   }
    return;
 }
 
@@ -265,7 +275,11 @@ mk_w_catalog_sales (void* row, ds_key_t index)
    genrand_integer(&nLineitems, DIST_UNIFORM, 4, 14, 0, CS_ORDER_NUMBER);
    for (i=1; i <= nLineitems; i++)
    {
-      mk_detail(NULL, 1);
+       mk_detail(row, 1);
+       if (row != NULL) {
+           row += (sizeof(struct W_CATALOG_SALES_TBL) + sizeof(struct W_CATALOG_RETURNS_TBL));
+           ((struct W_CATALOG_SALES_TBL*)row)->cs_pricing.valid = 0;
+       }
    }
 
    /**
