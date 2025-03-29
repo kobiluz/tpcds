@@ -35,6 +35,7 @@
  */ 
 #ifndef SCALING_H
 #define SCALING_H
+void setScale(int scale);
 ds_key_t get_rowcount(int table);
 ds_key_t getIDCount(int nTable);
 int getUpdateID(ds_key_t *pDest, int nTable, int nColumn);

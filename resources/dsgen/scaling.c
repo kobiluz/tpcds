@@ -65,12 +65,18 @@ static struct SCALING_T {
 } arRowcount[MAX_TABLE + 1];
 static int arUpdateDates[6];
 static int arInventoryUpdateDates[6];
-
+static int externalScale = -1;
 static int arScaleVolume[9] =
    {1, 10, 100, 300, 1000, 3000, 10000, 30000, 100000};
 
 void setUpdateScaling(int table);
 int	row_skip(int tbl, ds_key_t count);
+
+void 
+setScale(int scale)
+{
+    externalScale = scale;
+}
 
 /*
 * Routine: 
@@ -266,7 +272,7 @@ get_rowcount(int table)
 	if (!bScaleSet)
 	{
 		init_rand();
-		nScale = get_int("SCALE");
+		nScale = (externalScale > 0) ? externalScale : get_int("SCALE");
 		if (nScale > 100000)
 			ReportErrorNoLine(QERR_BAD_SCALE, NULL, 1);
 
